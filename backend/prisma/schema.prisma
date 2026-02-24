@@ -1,0 +1,188 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum GroupRole {
+  OWNER
+  MEMBER
+}
+
+model User {
+  id                           String    @id @default(uuid()) @db.Uuid
+  email                        String    @unique @db.VarChar(255)
+  password                     String    @db.VarChar(255)
+  name                         String    @db.VarChar(100)
+  avatar_url                   String?   @db.Text
+  role                         UserRole  @default(USER)
+  is_suspended                 Boolean   @default(false)
+  created_at                   DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at                   DateTime  @updatedAt @db.Timestamptz(6)
+  deleted_at                   DateTime? @db.Timestamptz(6)
+  email_on_settlement_received Boolean   @default(true)
+
+  // Relations
+  group_members    GroupMember[]
+  created_expenses Expense[]      @relation("user_created_expenses")
+  paid_expenses    Expense[]      @relation("user_paid_expenses")
+  settlements_from Settlement[]   @relation("user_settlements_from")
+  settlements_to   Settlement[]   @relation("user_settlements_to")
+  expense_shares   ExpenseShare[]
+  refresh_tokens   RefreshToken[]
+
+  @@map("users")
+}
+
+model Group {
+  id          String  @id @default(uuid()) @db.Uuid
+  name        String  @db.VarChar(100)
+  description String? @db.Text
+  category    String? @db.VarChar(50)
+  icon_url    String? @db.Text
+  invite_code String  @unique @db.VarChar(32)
+  is_archived Boolean @default(false)
+
+  // Admin / moderation
+  is_suspended Boolean @default(false)
+
+  // Group-level permissions / settings
+  is_locked                     Boolean @default(false)
+  members_can_edit_all_expenses Boolean @default(false)
+  members_can_delete_expenses   Boolean @default(false)
+
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+  updated_at DateTime @updatedAt @db.Timestamptz(6)
+
+  // Relations
+  group_members GroupMember[]
+  expenses      Expense[]
+  settlements   Settlement[]
+  invites       Invite[]
+
+  @@map("groups")
+}
+
+model GroupMember {
+  id        String    @id @default(uuid()) @db.Uuid
+  group_id  String    @db.Uuid
+  user_id   String    @db.Uuid
+  role      GroupRole @default(MEMBER)
+  joined_at DateTime  @default(now()) @db.Timestamptz(6)
+
+  // Relations
+  group Group @relation(fields: [group_id], references: [id])
+  user  User  @relation(fields: [user_id], references: [id])
+
+  @@unique([group_id, user_id])
+  @@map("group_members")
+}
+
+model Expense {
+  id            String   @id @default(uuid()) @db.Uuid
+  group_id      String   @db.Uuid
+  created_by_id String   @db.Uuid
+  description   String   @db.Text
+  amount        Decimal  @db.Decimal(18, 2)
+  category      String   @db.VarChar(100)
+  date          DateTime @db.Timestamptz(6)
+  paid_by_id    String   @db.Uuid
+  receipt_url   String?  @db.Text
+  notes         String?  @db.Text
+  created_at    DateTime @default(now()) @db.Timestamptz(6)
+  updated_at    DateTime @updatedAt @db.Timestamptz(6)
+
+  // Relations
+  group          Group          @relation(fields: [group_id], references: [id])
+  created_by     User           @relation("user_created_expenses", fields: [created_by_id], references: [id])
+  paid_by        User           @relation("user_paid_expenses", fields: [paid_by_id], references: [id])
+  expense_shares ExpenseShare[]
+
+  @@index([group_id])
+  @@index([created_by_id])
+  @@index([paid_by_id])
+  @@map("expenses")
+}
+
+model ExpenseShare {
+  id         String  @id @default(uuid()) @db.Uuid
+  expense_id String  @db.Uuid
+  user_id    String  @db.Uuid
+  amount     Decimal @db.Decimal(18, 2)
+
+  // Relations
+  expense Expense @relation(fields: [expense_id], references: [id])
+  user    User    @relation(fields: [user_id], references: [id])
+
+  @@unique([expense_id, user_id])
+  @@index([expense_id])
+  @@index([user_id])
+  @@map("expense_shares")
+}
+
+model Settlement {
+  id           String   @id @default(uuid()) @db.Uuid
+  group_id     String   @db.Uuid
+  from_user_id String   @db.Uuid
+  to_user_id   String   @db.Uuid
+  amount       Decimal  @db.Decimal(18, 2)
+  proof_url    String?  @db.Text
+  notes        String?  @db.Text
+  date         DateTime @default(now()) @db.Timestamptz(6)
+
+  // Relations
+  group     Group @relation(fields: [group_id], references: [id])
+  from_user User  @relation("user_settlements_from", fields: [from_user_id], references: [id])
+  to_user   User  @relation("user_settlements_to", fields: [to_user_id], references: [id])
+
+  @@index([group_id])
+  @@index([from_user_id])
+  @@index([to_user_id])
+  @@map("settlements")
+}
+
+model Invite {
+  id          String    @id @default(uuid()) @db.Uuid
+  email       String    @db.VarChar(255)
+  group_id    String    @db.Uuid
+  code        String    @unique @db.VarChar(32)
+  created_at  DateTime  @default(now()) @db.Timestamptz(6)
+  expired_at  DateTime? @db.Timestamptz(6)
+  accepted_at DateTime? @db.Timestamptz(6)
+
+  // Relations
+  group Group @relation(fields: [group_id], references: [id])
+
+  @@unique([group_id, email])
+  @@index([group_id])
+  @@map("invites")
+}
+
+model RefreshToken {
+  id         String    @id @default(uuid()) @db.Uuid
+  jti        String    @unique @db.VarChar(64)
+  token      String    @db.Text
+  expires_at DateTime  @db.Timestamptz(6)
+  revoked    Boolean   @default(false)
+  revoked_at DateTime? @db.Timestamptz(6)
+  user_id    String    @db.Uuid
+
+  user User @relation(fields: [user_id], references: [id])
+
+  @@index([user_id])
+  @@map("refresh_tokens")
+}

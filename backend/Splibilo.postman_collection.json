@@ -1,0 +1,1361 @@
+{
+	"info": {
+		"_postman_id": "63fb9de9-1c1e-48cc-ae2b-f5180de4d793",
+		"name": "Splibilo",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "28797563"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Budi Santoso\",\r\n    \"email\": \"budi@example.com\",\r\n    \"password\": \"12345678\",\r\n    // \"role\": \"ADMIN\",\r\n    \"avatar_url\": \"https://source.unsplash.com/random/1200x800\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/auth/register",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set(\"token\", pm.response.json().data.access_token)"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    // \"email\": \"admin@example.com\",\r\n    // \"password\": \"12345678\"\r\n\r\n    // \"email\": \"budi@example.com\",\r\n    // \"password\": \"12345678\"\r\n\r\n    \"email\": \"adi@example.com\",\r\n    \"password\": \"12345678\"\r\n\r\n    // \"email\": \"joko@example.com\",\r\n    // \"password\": \"12345678\"\r\n\r\n    //  \"email\": \"agus@example.com\",\r\n    // \"password\": \"12345678\"\r\n\r\n    //  \"email\": \"wtimo5324@gmail.com\",\r\n    // \"password\": \"12345678\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/auth/login",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh Token",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"refresh_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkZjg1MTVmMS1iMzA3LTRkYTktOWIzZC0zNmQ2MDY5NTQwMzgiLCJlbWFpbCI6ImFkbWluNUBleGFtcGxlLmNvbSIsInJvbGUiOiJBRE1JTiIsImp0aSI6ImFhZGNkNjhkLTJiYjktNDBiZC1iODg2LTQzZTA1OGE3Njc2NyIsImlhdCI6MTc2NDg0ODQ0NSwiZXhwIjoxNzY1NDUzMjQ1fQ.Jz_aNBwI9pWIjCjhzp4CJGpelFAfbOPiseMSg2bMURk\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/auth/refresh",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"auth",
+								"refresh"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"refresh_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkZjg1MTVmMS1iMzA3LTRkYTktOWIzZC0zNmQ2MDY5NTQwMzgiLCJlbWFpbCI6ImFkbWluNUBleGFtcGxlLmNvbSIsInJvbGUiOiJBRE1JTiIsImp0aSI6IjhiNjU1Mzk2LThiY2EtNGU0Mi1hZGU0LWQ0YzQ4YTllMmJkNyIsImlhdCI6MTc2NDg0ODExMCwiZXhwIjoxNzY1NDUyOTEwfQ._Uxi7VzuYTPZATI8-0SFZ4Mlwk-TVD9xH2eiQWHQgvs\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/auth/logout",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Groups",
+			"item": [
+				{
+					"name": "Admin",
+					"item": [
+						{
+							"name": "List Groups",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/admin/groups?per_page=20&page=1",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"admin",
+										"groups"
+									],
+									"query": [
+										{
+											"key": "category",
+											"value": "travel",
+											"disabled": true
+										},
+										{
+											"key": "per_page",
+											"value": "20"
+										},
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "disable_pagination",
+											"value": "true",
+											"disabled": true
+										},
+										{
+											"key": "is_archived",
+											"value": "true",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Detail",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/admin/groups/:id",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"admin",
+										"groups",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "{{groupId}}"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "User",
+					"item": [
+						{
+							"name": "Create",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.collectionVariables.set(\"groupId\", pm.response.json().data.id)\r",
+											"pm.collectionVariables.set(\"ownerId\", pm.response.json().data.group_members[0].user_id)\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"Bali Trip 2025\",\r\n  \"description\": \"Expense sharing for our Bali vacation\",\r\n  \"category\": \"Travel\",\r\n  \"icon_url\": \"https://example.com/icons/palm.png\"\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/groups",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"groups"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "List",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/groups?is_archived=true&category=travel&per_page=20&page=1",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"groups"
+									],
+									"query": [
+										{
+											"key": "is_archived",
+											"value": "true"
+										},
+										{
+											"key": "category",
+											"value": "travel"
+										},
+										{
+											"key": "per_page",
+											"value": "20"
+										},
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "disable_pagination",
+											"value": "true",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Detail",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/groups/:id",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"groups",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "4fa2c0db-4a2d-4fb1-bc43-6af8d9fd8244"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"Bali Trip with Friends\",\r\n  \"is_locked\": false,\r\n  \"members_can_edit_all_expenses\": true,\r\n  \"members_can_delete_expenses\": false,\r\n  \"settlement_suggestions_enabled\": true\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/groups/:id",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"groups",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "{{groupId}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Archive",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/groups/:id/archive",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"groups",
+										":id",
+										"archive"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "{{groupId}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Unarchive",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/groups/:id/unarchive",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"groups",
+										":id",
+										"unarchive"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "{{groupId}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Members",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/groups/:id/members",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"groups",
+										":id",
+										"members"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "{{groupId}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Remove Member",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/groups/:groupId/members/:memberId",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"groups",
+										":groupId",
+										"members",
+										":memberId"
+									],
+									"variable": [
+										{
+											"key": "groupId",
+											"value": "{{groupId}}"
+										},
+										{
+											"key": "memberId",
+											"value": "a928fd70-4681-475e-9882-fdbe90155055"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Leave Group",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/groups/:groupId/leave",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"groups",
+										":groupId",
+										"leave"
+									],
+									"variable": [
+										{
+											"key": "groupId",
+											"value": "{{groupId}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Balance",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/groups/:groupId/balances",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"groups",
+										":groupId",
+										"balances"
+									],
+									"variable": [
+										{
+											"key": "groupId",
+											"value": "{{groupId}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Analytics",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/groups/:groupId/analytics?from=2025-12-01&to=2025-12-31",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"groups",
+										":groupId",
+										"analytics"
+									],
+									"query": [
+										{
+											"key": "from",
+											"value": "2025-12-01"
+										},
+										{
+											"key": "to",
+											"value": "2025-12-31"
+										}
+									],
+									"variable": [
+										{
+											"key": "groupId",
+											"value": "{{groupId}}"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Expense",
+			"item": [
+				{
+					"name": "Admin",
+					"item": [
+						{
+							"name": "List",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/admin/expenses?category=Food&min_amount=20000&max_amount=200000&start_date=2025-12-01&end_date=2025-12-31&disable_pagination=true",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"admin",
+										"expenses"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1",
+											"disabled": true
+										},
+										{
+											"key": "per_page",
+											"value": "20",
+											"disabled": true
+										},
+										{
+											"key": "category",
+											"value": "Food"
+										},
+										{
+											"key": "paid_by_user_id",
+											"value": "user-123",
+											"disabled": true
+										},
+										{
+											"key": "min_amount",
+											"value": "20000"
+										},
+										{
+											"key": "max_amount",
+											"value": "200000"
+										},
+										{
+											"key": "start_date",
+											"value": "2025-12-01"
+										},
+										{
+											"key": "end_date",
+											"value": "2025-12-31"
+										},
+										{
+											"key": "disable_pagination",
+											"value": "true"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Detail",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/groups/:groupId/expenses/:expenseId",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"groups",
+										":groupId",
+										"expenses",
+										":expenseId"
+									],
+									"variable": [
+										{
+											"key": "groupId",
+											"value": "{{groupId}}"
+										},
+										{
+											"key": "expenseId",
+											"value": "{{expenseId}}"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "User",
+					"item": [
+						{
+							"name": "List",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/groups/:groupId/expenses",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"groups",
+										":groupId",
+										"expenses"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1",
+											"disabled": true
+										},
+										{
+											"key": "per_page",
+											"value": "20",
+											"disabled": true
+										},
+										{
+											"key": "category",
+											"value": "Food",
+											"disabled": true
+										},
+										{
+											"key": "paid_by_user_id",
+											"value": "969d6421-0f61-454a-bdd7-b4abe5a43277",
+											"disabled": true
+										},
+										{
+											"key": "min_amount",
+											"value": "20000",
+											"disabled": true
+										},
+										{
+											"key": "max_amount",
+											"value": "200000",
+											"disabled": true
+										},
+										{
+											"key": "start_date",
+											"value": "2025-12-01",
+											"disabled": true
+										},
+										{
+											"key": "end_date",
+											"value": "2025-12-31",
+											"disabled": true
+										}
+									],
+									"variable": [
+										{
+											"key": "groupId",
+											"value": "4fa2c0db-4a2d-4fb1-bc43-6af8d9fd8244"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.collectionVariables.set(\"expenseId\", pm.response.json().data.id)"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"description\": \"Lunch\",\r\n  \"amount\": 150000,\r\n  \"category\": \"Food\",\r\n  \"date\": \"2025-12-05T19:30:00.000Z\",\r\n  \"paid_by_user_id\": \"969d6421-0f61-454a-bdd7-b4abe5a43277\",\r\n  \"receipt_url\": \"https://example.com/receipts/lunch.jpg\",\r\n  \"notes\": \"Including drinks\",\r\n  \"shares\": [\r\n    { \"user_id\": \"969d6421-0f61-454a-bdd7-b4abe5a43277\", \"amount\": 50000 },\r\n    { \"user_id\": \"32265a84-4338-47c7-8d61-eba900925b7d\", \"amount\": 50000 },\r\n    { \"user_id\": \"01516476-e7bb-472a-9a0c-1d757f5dce21\", \"amount\": 50000 }\r\n  ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/groups/:groupsId/expenses",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"groups",
+										":groupsId",
+										"expenses"
+									],
+									"variable": [
+										{
+											"key": "groupsId",
+											"value": "{{groupId}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Detail",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/groups/:groupId/expenses/:expenseId",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"groups",
+										":groupId",
+										"expenses",
+										":expenseId"
+									],
+									"variable": [
+										{
+											"key": "groupId",
+											"value": "{{groupId}}"
+										},
+										{
+											"key": "expenseId",
+											"value": "{{expenseId}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Edit",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"description\": \"Dinner - updated\",\r\n  \"amount\": 240000,\r\n//   \"category\": \"Food\",\r\n//   \"date\": \"2025-12-05T20:00:00.000Z\",\r\n//   \"paid_by_user_id\": \"969d6421-0f61-454a-bdd7-b4abe5a43277\",\r\n//   \"receipt_url\": \"https://example.com/receipts/dinner-updated.jpg\",\r\n//   \"notes\": \"Added extra snacks\"\r\n  \"shares\": [\r\n    { \"user_id\": \"969d6421-0f61-454a-bdd7-b4abe5a43277\", \"amount\": 85000 },\r\n    { \"user_id\": \"32265a84-4338-47c7-8d61-eba900925b7d\", \"amount\": 75000 },\r\n    { \"user_id\": \"01516476-e7bb-472a-9a0c-1d757f5dce21\", \"amount\": 80000 }\r\n  ]\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/groups/:groupId/expenses/:expenseId",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"groups",
+										":groupId",
+										"expenses",
+										":expenseId"
+									],
+									"variable": [
+										{
+											"key": "groupId",
+											"value": "{{groupId}}"
+										},
+										{
+											"key": "expenseId",
+											"value": "{{expenseId}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/groups/:groupId/expenses/:expenseId",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"groups",
+										":groupId",
+										"expenses",
+										":expenseId"
+									],
+									"variable": [
+										{
+											"key": "groupId",
+											"value": "{{groupId}}"
+										},
+										{
+											"key": "expenseId",
+											"value": "{{expenseId}}"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Settlement",
+			"item": [
+				{
+					"name": "Create",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"to_user_id\": \"969d6421-0f61-454a-bdd7-b4abe5a43277\",\r\n  \"amount\": 80000,\r\n  \"notes\": \"repayment\",\r\n  \"proof_url\": \"https://example.com/transfers/b-paid-a-50000.png\",\r\n  \"date\": \"2025-12-06T03:30:00.000Z\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/groups/:groupId/settlements",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"groups",
+								":groupId",
+								"settlements"
+							],
+							"variable": [
+								{
+									"key": "groupId",
+									"value": "{{groupId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/groups/:groupId/settlements?page=1&per_page=10&sort_dir=desc&member_id=969d6421-0f61-454a-bdd7-b4abe5a43277",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"groups",
+								":groupId",
+								"settlements"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "per_page",
+									"value": "10"
+								},
+								{
+									"key": "sort_dir",
+									"value": "desc"
+								},
+								{
+									"key": "member_id",
+									"value": "969d6421-0f61-454a-bdd7-b4abe5a43277"
+								}
+							],
+							"variable": [
+								{
+									"key": "groupId",
+									"value": "4fa2c0db-4a2d-4fb1-bc43-6af8d9fd8244"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Invite",
+			"item": [
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"andreww1605@gmail.com\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/groups/:groupId/invites",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"groups",
+								":groupId",
+								"invites"
+							],
+							"variable": [
+								{
+									"key": "groupId",
+									"value": "4fa2c0db-4a2d-4fb1-bc43-6af8d9fd8244"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Join by Code",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"invite_code\": \"QEG57U7Q\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/groups/join",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"groups",
+								"join"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Accept",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"code\": \"C5RTKTM3\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/invites/accept",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"invites",
+								"accept"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "User",
+					"item": [
+						{
+							"name": "Me",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/me",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"me"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Edit Profile",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"Agus Wijaya\",\r\n  \"avatar_url\": \"avatars/1733490000-123456789.png\",\r\n  \"settlement_suggestions_enabled\": true\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/me",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"me"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Activity",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/user/activity?from=2025-12-08&to=2025-12-09",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"user",
+										"activity"
+									],
+									"query": [
+										{
+											"key": "from",
+											"value": "2025-12-08"
+										},
+										{
+											"key": "to",
+											"value": "2025-12-09"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Admin",
+					"item": [
+						{
+							"name": "List",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/admin/users",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"admin",
+										"users"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1",
+											"disabled": true
+										},
+										{
+											"key": "per_page",
+											"value": "10",
+											"disabled": true
+										},
+										{
+											"key": "search",
+											"value": "andrew",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Detail",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/admin/users/:id",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"admin",
+										"users",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "6d0779b1-2dde-4f4e-a703-99448b8c2fc9"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Edit User",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"Agus Wibawa\",\r\n//   \"role\": \"USER\",\r\n  \"is_suspended\": true\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/admin/users/:id",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"admin",
+										"users",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "6d0779b1-2dde-4f4e-a703-99448b8c2fc9"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Upload",
+			"item": [
+				{
+					"name": "File Upload",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/Andrew/Downloads/rev-contoh-link-kritik-saran-struk-kpandroid.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/upload/receipt",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"upload",
+								"receipt"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Receipt OCR",
+			"item": [
+				{
+					"name": "Extract",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    // \"path\": \"receipts/file-1765023313866-883657453.jpg\"\r\n    \"path\": \"receipts/file-1765030937474-914140138.jpg\"\r\n    // \"path\": \"receipts/file-1765031376054-657814676.jpg\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/ocr/receipt",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"ocr",
+								"receipt"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "host",
+			"value": ""
+		},
+		{
+			"key": "token",
+			"value": ""
+		},
+		{
+			"key": "groupId",
+			"value": ""
+		},
+		{
+			"key": "ownerId",
+			"value": ""
+		},
+		{
+			"key": "memberId",
+			"value": ""
+		},
+		{
+			"key": "adminId",
+			"value": ""
+		},
+		{
+			"key": "expenseId",
+			"value": ""
+		}
+	]
+}
