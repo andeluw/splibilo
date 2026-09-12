@@ -1,155 +1,101 @@
-# 💸 Splibilo
+<p align="center">
+  <img src="frontend/public/images/logo/logo.png" alt="Splibilo" width="110" />
+</p>
 
-### Web-Based Group Expense Tracking & Settlement System
+<h1 align="center">Splibilo</h1>
 
-Splibilo is a full-stack web application designed to manage shared group expenses in a structured, transparent, and automated way.
+<p align="center"><b>Track shared group expenses and settle up in the fewest payments possible.</b></p>
 
-The system enables users to record expenses, split costs (equal or custom), upload receipts with OCR-assisted parsing, track real-time balances, and generate optimized settlement suggestions using a debt simplification algorithm.
+Splitting a trip, a flat, or a dinner ends the same way: a group chat full of
+"who owes who" and a spreadsheet nobody trusts. Splibilo replaces that: log an
+expense (or snap the receipt), and it tracks every balance and tells each person
+the *shortest* set of payments that clears the group.
 
-Built with a modular client–server architecture using **NestJS** (backend) and **Next.js App Router** (frontend), powered by **PostgreSQL + Prisma ORM**.
+Full-stack: **NestJS** + **Next.js (App Router)** + **PostgreSQL/Prisma**.
 
----
+![Splibilo settlement graph](docs/screenshots/01-landing-settlements-light-preview.png#gh-light-mode-only)
+![Splibilo settlement graph](docs/screenshots/01-landing-settlements-dark-preview.png#gh-dark-mode-only)
 
-## 🚀 Key Features
+## Quick Start
 
-### 🔐 Authentication & Authorization
+```bash
+git clone https://github.com/andeluw/splibilo && cd splibilo
 
-- JWT-based authentication with refresh token rotation
-- Role-based access control (Owner, Member, Admin)
-- Protected routes and membership enforcement
-- Secure logout with token invalidation
+# Backend (NestJS, :8000)
+cd backend
+cp .env.example .env          # set DATABASE_URL + GEMINI_API_KEY
+pnpm install
+pnpm prisma migrate dev
+pnpm db:seed                  # demo group + expenses
+pnpm start:dev
 
----
+# Frontend (Next.js, :3000) in a new terminal
+cd frontend
+cp .env.example .env
+pnpm install
+pnpm dev
+```
 
-### 👥 Group & Member Management
+Open http://localhost:3000. Requires PostgreSQL and Node 18+.
 
-- Create and manage expense groups
-- Invite members via email or unique invite code
-- Configurable permissions (edit/delete expense rules)
-- Archive and lock group functionality
-- Prevent duplicate membership and invalid invites
+## Features
 
----
+- **Settle in the fewest payments**: greedy debt-simplification (O(n log n)) turns a tangle of IOUs into a minimal "who pays whom" list.
+- **Snap a receipt, skip the typing**: Sharp → Tesseract → Gemini pipeline extracts items, tax and total into a prefilled expense form.
+- **Balances that are always right**: every expense/settlement recomputes net balances in real time; custom splits are floating-point-safe, updates are transactional.
+- **Groups with real permissions**: invite by email or code, role-based access (Owner/Admin/Member), archive and lock.
+- **See where the money goes**: trends, category breakdown, top payers, personal summary.
+- **Secure by default**: JWT auth with refresh-token rotation, membership-enforced routes, 90%+ backend test coverage.
 
-### 💸 Expense Management
+## Screenshots
 
-- Add expenses with:
-  - Description
-  - Amount
-  - Category
-  - Date
-  - Paid-by user
-  - Optional receipt upload
-- Support for:
-  - Equal split
-  - Custom split with floating-point-safe validation (epsilon comparison)
-- Pagination, filtering, and sorting
-- Transaction-safe updates using `prisma.$transaction`
+**Your groups**: every shared group, your balance in each, filter by category.
 
----
+![Your groups](docs/screenshots/02-groups-light.png#gh-light-mode-only)
+![Your groups](docs/screenshots/02-groups-dark.png#gh-dark-mode-only)
 
-### 🧾 OCR-Assisted Receipt Parsing
+**Group overview**: balances, spend-over-time, category breakdown, top payers.
 
-Hybrid OCR pipeline:
+![Group overview](docs/screenshots/03-group-overview-light.png#gh-light-mode-only)
+![Group overview](docs/screenshots/03-group-overview-dark.png#gh-dark-mode-only)
 
-1. **Sharp** → Image preprocessing
-2. **Tesseract.js** → Raw text extraction
-3. **Google Gemini LLM** → Structured JSON parsing
+**Add an expense**: split equally or per person, attach a receipt, or prefill it from receipt OCR.
 
-Extracted fields:
+![Add an expense](docs/screenshots/04-expense-form-filled-light.png#gh-light-mode-only)
+![Add an expense](docs/screenshots/04-expense-form-filled-dark.png#gh-dark-mode-only)
 
-- Items
-- Subtotal
-- Tax
-- Grand total
+**Settlements**: what has actually been paid back, and record new transfers.
 
-Structured data is used to pre-fill expense forms automatically.
+![Settlements](docs/screenshots/05-settlements-light.png#gh-light-mode-only)
+![Settlements](docs/screenshots/05-settlements-dark.png#gh-dark-mode-only)
 
----
+**Your activity**: your position across every group, trends, recent expenses and settlements.
 
-### 📊 Automatic Balance Calculation
+![Your activity](docs/screenshots/06-activity-light.png#gh-light-mode-only)
+![Your activity](docs/screenshots/06-activity-dark.png#gh-dark-mode-only)
 
-Real-time net balance per member:
+## How It Works
+
+**Balance** per member:
 
 ```
 net = totalPaid - totalOwed + settlementsReceived - settlementsSent
 ```
 
-Balances update automatically after every expense or settlement.
+**Debt simplification**: separate creditors/debtors, sort by balance, greedy
+two-pointer match. O(n log n), minimal transaction count.
 
----
+**OCR pipeline**: Sharp (preprocess) → Tesseract.js (text) → Gemini (structured
+JSON: items, subtotal, tax, total) → prefilled expense form.
 
-### 🔄 Debt Simplification Algorithm
+## Tech Stack
 
-Splibilo minimizes the number of transactions required to settle debts.
+**Frontend**: Next.js 15, React 19, Tailwind v4, Shadcn UI, TanStack Query, Zustand, React Hook Form, Recharts
 
-Algorithm approach:
+**Backend**: NestJS 11, Prisma, PostgreSQL, JWT (refresh rotation), Multer + Sharp, Tesseract.js + Gemini, Nodemailer
 
-- Separate creditors and debtors
-- Sort by balance
-- Apply greedy two-pointer matching
+## Purpose
 
-Time complexity: **O(n log n)**
-
-Generates optimized “who owes whom” settlement suggestions.
-
----
-
-### 📈 Analytics Dashboard
-
-- Expense trends over time
-- Settlement trends
-- Category breakdown charts
-- Top payers ranking
-- Personal financial summary
-- Continuous date normalization for visual consistency
-
----
-
-## 🏗 Architecture Overview
-
-### Frontend
-
-- Next.js 15 (App Router)
-- React 19
-- Tailwind CSS v4
-- Shadcn UI
-- TanStack Query (server state)
-- Zustand (client state)
-- React Hook Form
-- Recharts
-
-### Backend
-
-- NestJS 11 (modular architecture)
-- Prisma ORM
-- PostgreSQL
-- JWT authentication with refresh rotation
-- Multer + Sharp (file uploads)
-- Tesseract.js + Google Gemini (OCR)
-- Nodemailer (email notifications)
-
----
-
-## 🧠 Engineering Highlights
-
-- Floating-point-safe share validation
-- Transactional expense and share updates
-- Greedy debt simplification algorithm
-- In-memory analytics aggregation
-- Hybrid OCR + LLM structured extraction pipeline
-- Role-based permission enforcement
-- 90%+ backend test coverage (Jest + Supertest E2E)
-
----
-
-## 🎯 Purpose
-
-Splibilo centralizes collaborative expense management into a structured system, replacing spreadsheets and informal tracking with automated, transparent, and intelligent financial coordination.
-
-It ensures:
-
-- Accuracy
-- Fairness
-- Transparency
-- Reduced settlement friction
+Built to replace spreadsheets and "who owes who" chats with automated, transparent,
+fair settlement. A full-stack study in transactional data integrity, algorithmic
+optimization, and an OCR + LLM extraction pipeline.
