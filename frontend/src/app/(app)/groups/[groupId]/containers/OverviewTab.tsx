@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
 import { format as formatDate,subDays } from 'date-fns';
-import { Link2Icon, UsersIcon } from 'lucide-react';
 import React from 'react';
 import {
   Area,
@@ -14,7 +13,8 @@ import {
 } from 'recharts';
 
 import api from '@/lib/api';
-import { copyToClipboardWithToast, numberToCurrency } from '@/lib/helper';
+import { getCategoryColor } from '@/lib/category-color';
+import { numberToCurrency } from '@/lib/helper';
 import { cn } from '@/lib/utils';
 
 import { Button } from '@/components/button';
@@ -102,17 +102,6 @@ export function OverviewTab({ group, groupId }: OverviewTabProps) {
   const apiRangeFrom = analytics?.range?.from ?? rangeFrom;
   const apiRangeTo = analytics?.range?.to ?? rangeTo;
 
-  const handleCopyInviteLink = React.useCallback(() => {
-    if (!group.invite_code || typeof window === 'undefined') return;
-
-    const inviteUrl = `${group.invite_code}`;
-
-    copyToClipboardWithToast(inviteUrl, {
-      successMessage: 'Invite code copied. Share it with your friends!',
-      errorMessage: 'Could not copy invite code',
-    });
-  }, [group.invite_code]);
-
   return (
     <div className='grid gap-4 lg:grid-cols-[2fr,1.4fr]'>
       <GroupBalanceCard
@@ -121,23 +110,19 @@ export function OverviewTab({ group, groupId }: OverviewTabProps) {
         totalShouldReceive={totalShouldReceive}
       />
 
-      <div className='flex flex-col gap-4'>
-        <GroupAnalyticsCard
-          rangePreset={rangePreset}
-          onRangeChange={setRangePreset}
-          apiRangeFrom={apiRangeFrom}
-          apiRangeTo={apiRangeTo}
-          isLoading={isLoading}
-          isError={isError}
-          analyticsTotals={analyticsTotals}
-          hasActivityInRange={hasActivityInRange}
-          activityChartData={activityChartData}
-          categoryChartData={categoryChartData}
-          topPayers={topPayers}
-        />
-
-        <GroupInfoCard group={group} onCopyInviteLink={handleCopyInviteLink} />
-      </div>
+      <GroupAnalyticsCard
+        rangePreset={rangePreset}
+        onRangeChange={setRangePreset}
+        apiRangeFrom={apiRangeFrom}
+        apiRangeTo={apiRangeTo}
+        isLoading={isLoading}
+        isError={isError}
+        analyticsTotals={analyticsTotals}
+        hasActivityInRange={hasActivityInRange}
+        activityChartData={activityChartData}
+        categoryChartData={categoryChartData}
+        topPayers={topPayers}
+      />
     </div>
   );
 }
@@ -174,10 +159,8 @@ function GroupBalanceCard({
     <Card
       className={cn(
         'shadow-sm',
-        balanceState === 'credit' &&
-          'border-emerald-300/70 bg-emerald-50/70 dark:border-emerald-500/40 dark:bg-emerald-950/25',
-        balanceState === 'debt' &&
-          'border-red-300/70 bg-red-50/70 dark:border-red-500/40 dark:bg-red-950/25',
+        balanceState === 'credit' && 'bg-credit-soft border',
+        balanceState === 'debt' && 'bg-owed-soft border',
         balanceState === 'settled' &&
           'border-primary-100/70 bg-primary-50/50 dark:border-primary-900/40 dark:bg-primary-950/20',
       )}
@@ -189,10 +172,9 @@ function GroupBalanceCard({
         <Typography
           variant='s1'
           className={cn(
-            'font-semibold',
-            balanceState === 'debt' && 'text-red-600 dark:text-red-400',
-            balanceState === 'credit' &&
-              'text-emerald-600 dark:text-emerald-400',
+            'tabular font-semibold',
+            balanceState === 'debt' && 'text-owed',
+            balanceState === 'credit' && 'text-credit',
             balanceState === 'settled' &&
               'text-primary-700 dark:text-primary-200',
           )}
@@ -207,22 +189,22 @@ function GroupBalanceCard({
           <div className='rounded-lg border bg-background px-4 py-3'>
             <Typography
               variant='c1'
-              className='uppercase tracking-wide text-muted-foreground'
+              className='text-muted-foreground'
             >
               Total you should pay
             </Typography>
-            <Typography variant='s2' className='mt-1 font-semibold'>
+            <Typography variant='s2' className='tabular mt-1 font-semibold'>
               {numberToCurrency(totalShouldPay)}
             </Typography>
           </div>
           <div className='rounded-lg border bg-background px-4 py-3'>
             <Typography
               variant='c1'
-              className='uppercase tracking-wide text-muted-foreground'
+              className='text-muted-foreground'
             >
               Total you should receive
             </Typography>
-            <Typography variant='s2' className='mt-1 font-semibold'>
+            <Typography variant='s2' className='tabular mt-1 font-semibold'>
               {numberToCurrency(totalShouldReceive)}
             </Typography>
           </div>
@@ -320,7 +302,7 @@ function GroupAnalyticsCard({
               <div className='space-y-2'>
                 <Typography
                   variant='c1'
-                  className='uppercase tracking-wide text-muted-foreground'
+                  className='text-muted-foreground'
                 >
                   Expenses vs settlements
                 </Typography>
@@ -333,7 +315,7 @@ function GroupAnalyticsCard({
               <div className='space-y-2'>
                 <Typography
                   variant='c1'
-                  className='uppercase tracking-wide text-muted-foreground'
+                  className='text-muted-foreground'
                 >
                   Spending by category
                 </Typography>
@@ -368,7 +350,7 @@ function MetricsTiles({ totals }: MetricsTilesProps) {
       <div className='rounded-lg border bg-primary-50/80 px-3 py-3 dark:bg-primary-950/25'>
         <Typography
           variant='c1'
-          className='uppercase tracking-wide text-primary-800 dark:text-primary-100'
+          className='text-primary-800 dark:text-primary-100'
         >
           Total expenses
         </Typography>
@@ -377,11 +359,8 @@ function MetricsTiles({ totals }: MetricsTilesProps) {
         </Typography>
       </div>
 
-      <div className='rounded-lg border bg-emerald-50/80 px-3 py-3 dark:bg-emerald-950/25'>
-        <Typography
-          variant='c1'
-          className='uppercase tracking-wide text-emerald-700 dark:text-emerald-300'
-        >
+      <div className='bg-credit-soft rounded-lg border px-3 py-3'>
+        <Typography variant='c1' className='text-credit'>
           Settled
         </Typography>
         <Typography variant='s2' className='mt-1 font-semibold'>
@@ -389,11 +368,8 @@ function MetricsTiles({ totals }: MetricsTilesProps) {
         </Typography>
       </div>
 
-      <div className='rounded-lg border bg-red-50/80 px-3 py-3 dark:bg-red-950/25'>
-        <Typography
-          variant='c1'
-          className='uppercase tracking-wide text-red-700 dark:text-red-300'
-        >
+      <div className='bg-owed-soft rounded-lg border px-3 py-3'>
+        <Typography variant='c1' className='text-owed'>
           Still outstanding
         </Typography>
         <Typography variant='s2' className='mt-1 font-semibold'>
@@ -412,20 +388,17 @@ type YourActivitySummaryProps = {
 
 function YourActivitySummary({ totals }: YourActivitySummaryProps) {
   return (
-    <div className='rounded-lg border bg-amber-50/80 px-3 py-3 dark:bg-amber-950/25'>
-      <Typography
-        variant='c1'
-        className='uppercase tracking-wide text-amber-800'
-      >
+    <div className='rounded-lg border px-3 py-3'>
+      <Typography variant='c1' className='text-muted-foreground'>
         Your activity
       </Typography>
       <Typography variant='b3' className='mt-1'>
         You created{' '}
-        <span className='font-semibold text-red-700'>
+        <span className='text-foreground font-semibold'>
           {numberToCurrency(totals.me_total_expenses_created)}
         </span>{' '}
         in expenses and recorded{' '}
-        <span className='font-semibold text-emerald-700 '>
+        <span className='text-foreground font-semibold'>
           {numberToCurrency(totals.me_total_settlements_made)}
         </span>{' '}
         in settlements during this period.
@@ -508,19 +481,6 @@ function ActivityAreaChart({ hasActivity, data }: ActivityAreaChartProps) {
 //#endregion  //*======== Activity Chart ===========
 
 //#region //*=========== Category Chart ===========
-export function getCategoryColor(category: string): string {
-  const map: Record<string, string> = {
-    Transport: '#F97316', // orange
-    Activities: '#0EA5E9', // sky blue
-    Accommodation: '#8B5CF6', // violet
-    Food: '#EC4899', // pink
-    Entertainment: '#F43F5E', // red
-    Shopping: '#14B8A6', // teal
-    Others: '#A3A3A3', // gray
-  };
-
-  return map[category] ?? '#A3A3A3';
-}
 
 const categoryChartConfig = {
   amount: {
@@ -581,78 +541,46 @@ function TopPayersList({ topPayers }: TopPayersListProps) {
   if (!topPayers.length) return null;
 
   const visiblePayers = topPayers.slice(0, 5);
+  // Bars are relative to the top payer, so the leader always fills the row.
+  const maxPaid = Number(visiblePayers[0]?.total_paid ?? 0);
 
   return (
     <div className='pt-3 border-t'>
-      <Typography
-        variant='c1'
-        className='uppercase tracking-wide text-muted-foreground'
-      >
+      <Typography variant='c1' className='text-muted-foreground'>
         Top payers
       </Typography>
 
-      <div className='mt-2 space-y-1.5'>
+      <div className='mt-3 space-y-1'>
         {visiblePayers.map((p, index) => {
           const rank = index + 1;
-
-          const rowClass =
-            rank === 1
-              ? 'bg-amber-50/90 border-amber-200/90 dark:bg-amber-950/35 dark:border-amber-900/70'
-              : rank === 2
-                ? 'bg-slate-50/90 border-slate-200/90 dark:bg-slate-900/60 dark:border-slate-700'
-                : rank === 3
-                  ? 'bg-orange-50/90 border-orange-200/90 dark:bg-orange-950/35 dark:border-orange-900/70'
-                  : rank === 4
-                    ? 'bg-primary-50/70 border-primary-100/80 dark:bg-primary-950/30 dark:border-primary-900/60'
-                    : 'bg-card border-border/80';
-
-          const pillClass =
-            rank === 1
-              ? 'bg-gradient-to-br from-amber-400 to-amber-500 text-amber-50'
-              : rank === 2
-                ? 'bg-gradient-to-br from-slate-300 to-slate-400 text-slate-900'
-                : rank === 3
-                  ? 'bg-gradient-to-br from-orange-400 to-orange-500 text-orange-50'
-                  : 'bg-primary-600/90 text-primary-50 dark:bg-primary-500 dark:text-primary-950';
-
-          const subtitle =
-            rank === 1 ? '#1 this period' : `#${rank} this period`;
+          const pct =
+            maxPaid > 0
+              ? Math.max(6, Math.round((Number(p.total_paid) / maxPaid) * 100))
+              : 0;
 
           return (
             <div
               key={p.user_id}
-              className={cn(
-                'flex items-center justify-between rounded-xl border px-3 py-2 shadow-sm transition-colors',
-                rowClass,
-              )}
+              className='relative overflow-hidden rounded-lg px-3 py-2'
             >
-              <div className='flex items-center gap-3'>
-                {/* Rank pill */}
-                <span
-                  className={cn(
-                    'flex h-8 w-8 items-center justify-center rounded-full text-xs font-semibold',
-                    pillClass,
-                  )}
-                >
-                  {rank}
-                </span>
-
-                <div className='flex flex-col'>
-                  <Typography variant='b3' className='font-medium'>
+              <div
+                aria-hidden
+                className='absolute inset-y-0 left-0 bg-primary-100/70 dark:bg-primary-900/40'
+                style={{ width: `${pct}%` }}
+              />
+              <div className='relative flex items-center justify-between gap-3'>
+                <div className='flex min-w-0 items-center gap-2.5'>
+                  <span className='figure w-4 shrink-0 text-sm font-semibold text-primary-600 dark:text-primary-300'>
+                    {rank}
+                  </span>
+                  <Typography variant='b3' className='truncate font-medium'>
                     {p.name}
                   </Typography>
-                  <span className='text-[11px] leading-3 text-slate-600 dark:text-slate-300'>
-                    {subtitle}
-                  </span>
                 </div>
+                <Typography variant='b3' className='figure shrink-0 font-semibold'>
+                  {numberToCurrency(p.total_paid)}
+                </Typography>
               </div>
-
-              <Typography
-                variant='b3'
-                className='font-semibold text-slate-900 dark:text-slate-50'
-              >
-                {numberToCurrency(p.total_paid)}
-              </Typography>
             </div>
           );
         })}
@@ -661,91 +589,3 @@ function TopPayersList({ topPayers }: TopPayersListProps) {
   );
 }
 //#endregion  //*======== Top Payers List ===========
-
-//#region //*=========== Group Info Card ===========
-
-type GroupInfoCardProps = {
-  group: GroupDetail;
-  onCopyInviteLink: () => void;
-};
-
-function GroupInfoCard({ group, onCopyInviteLink }: GroupInfoCardProps) {
-  const hasInvite = Boolean(group.invite_code);
-
-  return (
-    <Card className='shadow-sm'>
-      <CardHeader className='pb-3'>
-        <CardTitle>Group info</CardTitle>
-        {group.name && (
-          <Typography variant='b3' className='text-muted-foreground'>
-            A quick snapshot of this group.
-          </Typography>
-        )}
-      </CardHeader>
-
-      <CardContent className='space-y-3'>
-        {/* Invite section */}
-        <div className='rounded-xl border border-primary-100/80 bg-gradient-to-r from-primary-50/95 via-primary-50/85 to-primary-100/80 p-3 dark:border-primary-900/70 dark:from-primary-950/60 dark:via-primary-950/50 dark:to-primary-900/50'>
-          <div className='flex items-center justify-between gap-2'>
-            <div className='flex items-center gap-2'>
-              <span className='flex h-7 w-7 items-center justify-center rounded-full bg-primary-600 text-primary-50 dark:bg-primary-400 dark:text-primary-950'>
-                <Link2Icon className='h-3.5 w-3.5' />
-              </span>
-              <Typography
-                variant='c1'
-                className='uppercase tracking-wide text-primary-900 dark:text-primary-50'
-              >
-                Invite code
-              </Typography>
-            </div>
-          </div>
-
-          <div className='mt-2 flex flex-wrap items-center gap-2'>
-            <span className='inline-flex items-center gap-2 rounded-md border border-primary-200/80 bg-card/80 px-2.5 py-1 text-sm font-semibold text-primary-900 dark:border-primary-800 dark:bg-primary-950/70 dark:text-primary-50'>
-              {hasInvite ? group.invite_code : 'Not available'}
-            </span>
-
-            {hasInvite && (
-              <Button
-                type='button'
-                variant='outline'
-                size='sm'
-                className='h-8 px-3'
-                onClick={onCopyInviteLink}
-              >
-                Copy invite code
-              </Button>
-            )}
-          </div>
-        </div>
-
-        {/* Members section */}
-        <div className='rounded-xl border border-blue-200/80 bg-blue-50/85 p-3 dark:border-blue-900/70 dark:bg-blue-950/45'>
-          <div className='flex items-center justify-between gap-2'>
-            <div className='flex items-center gap-2'>
-              <span className='flex h-7 w-7 items-center justify-center rounded-full bg-blue-500 text-blue-50 dark:bg-blue-400 dark:text-blue-950'>
-                <UsersIcon className='h-3.5 w-3.5' />
-              </span>
-              <Typography
-                variant='c1'
-                className='uppercase tracking-wide text-blue-900 dark:text-blue-50'
-              >
-                Members
-              </Typography>
-            </div>
-          </div>
-
-          <div className='mt-2 flex items-baseline justify-between gap-2'>
-            <Typography
-              variant='s2'
-              className='font-semibold text-blue-900 dark:text-blue-50'
-            >
-              {group.group_members.length} people
-            </Typography>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
-//#endregion  //*======== Group Info Card ===========

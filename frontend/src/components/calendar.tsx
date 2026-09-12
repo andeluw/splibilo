@@ -206,11 +206,11 @@ function CalendarDayButton({
       data-range-end={modifiers.range_end}
       data-range-middle={modifiers.range_middle}
       className={cn(
-        'data-[selected-single=true]:bg-primary-800 data-[selected-single=true]:text-background data-[selected-single=true]:font-semibold',
+        'data-[selected-single=true]:bg-primary-800 data-[selected-single=true]:text-primary-50 data-[selected-single=true]:font-semibold',
         'dark:data-[selected-single=true]:bg-primary-600 dark:data-[selected-single=true]:text-primary',
         'data-[range-middle=true]:bg-primary-50 data-[range-middle=true]:text-primary-800',
-        'data-[range-start=true]:bg-primary-800 data-[range-start=true]:text-background',
-        'data-[range-end=true]:bg-primary-800 data-[range-end=true]:text-background',
+        'data-[range-start=true]:bg-primary-800 data-[range-start=true]:text-primary-50',
+        'data-[range-end=true]:bg-primary-800 data-[range-end=true]:text-primary-50',
         'dark:data-[range-start=true]:bg-primary-600 dark:data-[range-start=true]:text-primary',
         'dark:data-[range-middle=true]:bg-accent data-[range-middle=true]:text-primary',
         'dark:data-[range-end=true]:bg-primary-600 dark:data-[range-end=true]:text-primary',

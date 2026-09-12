@@ -543,7 +543,7 @@ function CreateExpenseOcrPage() {
       <section className='flex flex-col gap-8'>
         <div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
           <div className='flex flex-col gap-2'>
-            <Typography variant='h1' className='font-bold text-primary-800'>
+            <Typography as='h1' variant='h1' className='text-primary-800 dark:text-primary-200'>
               Add Expense from Receipt
             </Typography>
             <Typography variant='b3' className='text-muted-foreground'>
@@ -883,7 +883,7 @@ function CreateExpenseOcrPage() {
                   </div>
                 </div>
 
-                <Typography variant='c2' className='text-amber-700'>
+                <Typography variant='c2' className='text-owed'>
                   *Each item&apos;s price is split equally among the selected
                   participants. Tax is spread based on everyone&apos;s share,
                   and the total is the sum of all items plus tax.

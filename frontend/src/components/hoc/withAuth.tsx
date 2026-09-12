@@ -53,7 +53,7 @@ export const isRole = (p: Role): p is Role => ROLE.includes(p as Role);
  * @see https://react-typescript-cheatsheet.netlify.app/docs/hoc/full_example/
  * @see https://github.com/mxthevs/nextjs-auth/blob/main/src/components/withAuth.tsx
  */
-export default function withAuth<T>(
+export default function withAuth<T extends object>(
   Component: React.ComponentType<T>,
   routeRole: keyof typeof RouteRole,
 ) {
@@ -157,5 +157,15 @@ export default function withAuth<T>(
     return <Component {...(props as T)} user={user} />;
   }
 
-  return ComponentWithAuth;
+  // useSearchParams opts the tree into client-side rendering, which Next
+  // refuses to prerender without a boundary above it.
+  function ComponentWithAuthBoundary(props: T) {
+    return (
+      <React.Suspense fallback={<Loading />}>
+        <ComponentWithAuth {...props} />
+      </React.Suspense>
+    );
+  }
+
+  return ComponentWithAuthBoundary;
 }

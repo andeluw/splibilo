@@ -42,7 +42,7 @@ const ModalContent = React.forwardRef<
         className={cn([
           'relative',
           'duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
-          'bg-white w-11/12 sm:max-w-xl border shadow-xl rounded-2xl',
+          'bg-popover text-popover-foreground w-11/12 sm:max-w-xl border shadow-xl rounded-2xl',
           'flex flex-col gap-4 sm:gap-6 p-4 sm:p-6',
           className,
         ])}
@@ -60,9 +60,9 @@ const ModalContent = React.forwardRef<
           >
             <IconButton
               icon={X}
-              classNames={{ icon: 'text-2xl text-typo-icons' }}
+              classNames={{ icon: 'text-muted-foreground' }}
               size='sm'
-              variant='ghost'
+              variant='ghostblack'
             />
           </DialogPrimitive.Close>
         ) : null}
@@ -89,7 +89,7 @@ const ModalFooter = ({
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
     className={cn(
-      'bg-gray-50 rounded-b-2xl',
+      'bg-muted rounded-b-2xl',
       '-mb-4 sm:-mb-6 -mx-4 sm:-mx-6',
       'px-4 sm:px-6 py-4 sm:py-6',
       'flex flex-col-reverse sm:flex-row sm:justify-end',

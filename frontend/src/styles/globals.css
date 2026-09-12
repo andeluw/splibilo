@@ -5,40 +5,40 @@
 
 @theme {
   /* #region  /**=========== Font Configuration =========== */
-  --font-primary: 'Inter', system-ui, sans-serif;
+  --font-primary: var(--font-geist-sans), system-ui, sans-serif;
+  --font-display: var(--font-display-face), var(--font-geist-sans), sans-serif;
   /* #endregion  /**======== Font Configuration =========== */
 
   /* #region  /**=========== Primary Color =========== */
-  --color-primary-50: oklch(0.962 0.018 272.314);
-  /* #eef2ff */
-  --color-primary-100: oklch(0.93 0.034 272.788);
-  /* #e0e7ff */
-  --color-primary-200: oklch(0.87 0.065 274.039);
-  /* #c7d2fe */
-  --color-primary-300: oklch(0.785 0.115 274.713);
-  /* #a5b4fc */
-  --color-primary-400: oklch(0.673 0.182 276.935);
-  /* #818cf8 */
-  --color-primary-500: oklch(0.585 0.233 277.117);
-  /* #6366f1 */
-  --color-primary-600: oklch(0.511 0.262 276.966);
-  /* #4f46e5 */
-  --color-primary-700: oklch(0.457 0.24 277.023);
-  /* #4338ca */
-  --color-primary-800: oklch(0.398 0.195 277.366);
-  /* #3730a3 */
-  --color-primary-900: oklch(0.359 0.144 278.697);
-  /* #312e81 */
-  --color-primary-950: oklch(0.257 0.09 281.288);
-  /* #1e1b4b */
+  /* Hue matches the brand mark. Chroma is high enough to carry a page and low
+     enough to stay under 80% saturation. Neutral surfaces carry the same hue. */
+  --color-primary-50: oklch(0.972 0.015 275);
+  --color-primary-100: oklch(0.942 0.032 275);
+  --color-primary-200: oklch(0.888 0.062 275.5);
+  --color-primary-300: oklch(0.806 0.102 276);
+  --color-primary-400: oklch(0.7 0.152 276.5);
+  --color-primary-500: oklch(0.606 0.188 277);
+  --color-primary-600: oklch(0.53 0.198 277);
+  --color-primary-700: oklch(0.472 0.181 277.5);
+  --color-primary-800: oklch(0.405 0.146 278);
+  --color-primary-900: oklch(0.352 0.111 279);
+  --color-primary-950: oklch(0.248 0.072 281);
   /* #endregion  /**======== Primary Color =========== */
 
   /* Dark color */
   --color-dark: #222222;
 
+  /* Consumed by <Typography color='...'> */
+  --color-typo: var(--foreground);
+  --color-typo-secondary: var(--muted-foreground);
+  --color-typo-tertiary: oklch(from var(--muted-foreground) l c h / 0.72);
+
   /* Animation configuration */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
   --animate-flicker: flicker 3s linear infinite;
   --animate-shimmer: shimmer 1.3s linear infinite;
+  --animate-rise: rise 0.5s cubic-bezier(0.23, 1, 0.32, 1) both;
 }
 
 /* Animation keyframes */
@@ -78,20 +78,19 @@
   }
 }
 
-@layer base {
-  /* inter var - latin */
-  @font-face {
-    font-family: 'Inter';
-    font-style: normal;
-    font-weight: 100 900;
-    font-display: block;
-    src: url('/fonts/inter-var-latin.woff2') format('woff2');
-    unicode-range:
-      U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
-      U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215,
-      U+FEFF, U+FFFD;
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
   }
 
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@layer base {
   .cursor-newtab {
     cursor:
       url('/images/new-tab.png') 8 8,
@@ -100,27 +99,27 @@
 
   /* #region  /**=========== Typography =========== */
   .h0 {
-    @apply font-primary text-3xl font-bold md:text-5xl;
+    @apply font-display text-3xl font-bold tracking-[-0.03em] md:text-5xl;
   }
 
   h1,
   .h1 {
-    @apply font-primary text-2xl font-bold md:text-4xl;
+    @apply font-display text-2xl font-bold tracking-[-0.025em] md:text-4xl;
   }
 
   h2,
   .h2 {
-    @apply font-primary text-xl font-bold md:text-3xl;
+    @apply font-display text-xl font-bold tracking-[-0.02em] md:text-3xl;
   }
 
   h3,
   .h3 {
-    @apply font-primary text-lg font-bold md:text-2xl;
+    @apply font-display text-lg font-bold tracking-[-0.015em] md:text-2xl;
   }
 
   h4,
   .h4 {
-    @apply font-primary text-base font-bold md:text-lg;
+    @apply font-display text-base font-semibold tracking-[-0.01em] md:text-lg;
   }
 
   body,
@@ -136,6 +135,12 @@
     @apply mx-auto w-11/12;
   }
 
+  /* Wider container for marketing pages, which need more air than the app */
+  .layout-wide {
+    max-width: 78rem;
+    @apply mx-auto w-11/12;
+  }
+
   .dashboard-layout {
     @apply mx-auto w-[92%] max-w-6xl md:w-[95%];
   }
@@ -144,9 +149,10 @@
     @apply border-gray-200 hover:border-gray-200/0;
   }
 
-  /* Class to adjust with sticky footer */
+  /* Class to adjust with sticky footer. dvh keeps mobile Safari from jumping
+     when its URL bar collapses. */
   .min-h-main {
-    @apply min-h-[calc(100vh-80px)];
+    @apply min-h-[calc(100dvh-80px)];
   }
 
   :root {
@@ -222,6 +228,94 @@
 }
 
 @layer utilities {
+  /* Money and counts align column-wise instead of dancing as digits change */
+  .tabular {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum';
+  }
+
+  /* Currency and totals: display face with fixed-width digits, so amounts line
+     up in a column and do not reflow as they change */
+  .figure {
+    font-family: var(--font-display);
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum';
+    letter-spacing: -0.015em;
+  }
+
+  /* Fixed grain overlay: breaks the flatness of large empty surfaces. Must stay
+     click-through, so it never sits above interactive content. */
+  .grain::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .dark .grain::after {
+    opacity: 0.06;
+  }
+
+  /* Ambient wash behind hero and CTA bands, radial so it never reads as a
+     stock 45-degree fade */
+  .ambient {
+    background-image:
+      radial-gradient(
+        58rem 34rem at 6% -14%,
+        var(--color-primary-200) 0%,
+        transparent 58%
+      ),
+      radial-gradient(
+        44rem 30rem at 96% 2%,
+        var(--color-primary-100) 0%,
+        transparent 60%
+      ),
+      radial-gradient(
+        52rem 24rem at 78% 112%,
+        var(--color-primary-100) 0%,
+        transparent 60%
+      );
+  }
+
+  .dark .ambient {
+    background-image:
+      radial-gradient(
+        58rem 34rem at 6% -14%,
+        oklch(from var(--color-primary-800) l c h / 0.5) 0%,
+        transparent 58%
+      ),
+      radial-gradient(
+        44rem 30rem at 96% 2%,
+        oklch(from var(--color-primary-900) l c h / 0.55) 0%,
+        transparent 60%
+      ),
+      radial-gradient(
+        52rem 24rem at 78% 112%,
+        oklch(from var(--color-primary-800) l c h / 0.32) 0%,
+        transparent 60%
+      );
+  }
+
+  /* Shadows tinted with the brand hue instead of neutral black, lit from above */
+  .shadow-ink {
+    box-shadow:
+      0 1px 2px oklch(0.4 0.05 277 / 0.05),
+      0 14px 34px -18px oklch(0.35 0.08 277 / 0.28);
+  }
+
+  .dark .shadow-ink {
+    box-shadow:
+      0 1px 2px oklch(0 0 0 / 0.4),
+      0 14px 34px -18px oklch(0 0 0 / 0.6);
+  }
+
+  /* Small label above a heading or beside data. Sentence case, not caps. */
+  .eyebrow {
+    @apply text-xs font-medium;
+  }
+
   .animated-underline {
     background-image:
       linear-gradient(#33333300, #33333300),
@@ -260,6 +354,12 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  /* Money direction. These encode data, so they are the one place a second and
+     third hue are allowed alongside the brand indigo. */
+  --color-credit: var(--credit);
+  --color-credit-soft: var(--credit-soft);
+  --color-owed: var(--owed);
+  --color-owed-soft: var(--owed-soft);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -295,24 +395,32 @@
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
+  /* Neutrals carry a trace of the brand hue (277) so surfaces sit in one
+     family instead of reading as flat browser gray. */
+  --background: oklch(0.995 0.002 277);
+  --foreground: oklch(0.16 0.012 277);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
+  --card-foreground: oklch(0.16 0.012 277);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.16 0.012 277);
+  --primary: oklch(0.21 0.014 277);
+  --primary-foreground: oklch(0.985 0.002 277);
+  --secondary: oklch(0.968 0.004 277);
+  --secondary-foreground: oklch(0.21 0.014 277);
+  --muted: oklch(0.968 0.004 277);
+  --muted-foreground: oklch(0.545 0.017 277);
+  --accent: oklch(0.968 0.006 277);
+  --accent-foreground: oklch(0.21 0.014 277);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --border: oklch(0.912 0.006 277);
+  --input: oklch(0.912 0.006 277);
+  --ring: oklch(0.606 0.188 277);
+  /* Owed reads as attention, not alarm: a debt between friends is not an error.
+     Hue 68 is a golden amber — yellower than orange but dark enough for AA text. */
+  --credit: oklch(0.49 0.128 162);
+  --credit-soft: oklch(0.962 0.038 162);
+  --owed: oklch(0.515 0.128 68);
+  --owed-soft: oklch(0.965 0.036 68);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -333,24 +441,28 @@
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
+  --background: oklch(0.168 0.014 279);
+  --foreground: oklch(0.968 0.004 277);
+  --card: oklch(0.212 0.017 279);
+  --card-foreground: oklch(0.968 0.004 277);
+  --popover: oklch(0.212 0.017 279);
+  --popover-foreground: oklch(0.968 0.004 277);
+  --primary: oklch(0.922 0.006 277);
+  --primary-foreground: oklch(0.212 0.017 279);
+  --secondary: oklch(0.272 0.019 279);
+  --secondary-foreground: oklch(0.968 0.004 277);
+  --muted: oklch(0.272 0.019 279);
+  --muted-foreground: oklch(0.712 0.017 277);
+  --accent: oklch(0.272 0.019 279);
+  --accent-foreground: oklch(0.968 0.004 277);
   --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
+  --border: oklch(0.92 0.02 277 / 12%);
+  --input: oklch(0.92 0.02 277 / 16%);
+  --ring: oklch(0.68 0.17 277);
+  --credit: oklch(0.78 0.148 162);
+  --credit-soft: oklch(0.32 0.06 162);
+  --owed: oklch(0.79 0.135 68);
+  --owed-soft: oklch(0.33 0.055 68);
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.769 0.188 70.08);
@@ -375,7 +487,50 @@
     @apply border-border outline-ring/50;
   }
 
+  html {
+    scroll-behavior: smooth;
+    /* Sticky navbar height, so in-page anchors do not land under it */
+    scroll-padding-top: 6rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
   body {
     @apply bg-background text-foreground;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  :where(h1, h2, h3, h4) {
+    text-wrap: balance;
+  }
+
+  :where(p) {
+    text-wrap: pretty;
+  }
+
+  :where(a, button, [role='button'], input, select, textarea):focus-visible {
+    @apply outline-ring outline-2 outline-offset-2;
+  }
+
+  /* Keyboard-only escape hatch past the navbar */
+  .skip-link {
+    @apply sr-only;
+  }
+
+  .skip-link:focus {
+    @apply not-sr-only bg-primary-700 fixed top-4 left-4 z-100 rounded-md px-4 py-2 text-sm font-semibold text-white;
   }
 }

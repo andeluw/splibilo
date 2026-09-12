@@ -119,7 +119,7 @@ export function ExpensesTab({
           <div className='rounded-lg border bg-primary-50/80 px-3 py-2 dark:bg-primary-950/25'>
             <Typography
               variant='c2'
-              className='uppercase tracking-wide text-primary-800 dark:text-primary-100'
+              className='text-primary-800 dark:text-primary-100'
             >
               Total amount
             </Typography>
@@ -137,28 +137,22 @@ export function ExpensesTab({
             )}
           </div>
 
-          <div className='rounded-lg border bg-emerald-50/80 px-3 py-2 dark:bg-emerald-950/25'>
-            <Typography
-              variant='c2'
-              className='uppercase tracking-wide text-emerald-800 dark:text-emerald-200'
-            >
+          <div className='rounded-lg border px-3 py-2'>
+            <Typography variant='c2' className='text-muted-foreground'>
               Number of expenses loaded
             </Typography>
             <Typography variant='s2' className='mt-1 font-semibold'>
               {allExpenses.length}
               {firstMeta && firstMeta.max_page > 1 && (
-                <span className='ml-1 text-xs font-normal text-emerald-900/80 dark:text-emerald-100/80'>
+                <span className='text-muted-foreground ml-1 text-xs font-normal'>
                   (page {firstMeta.page} of {firstMeta.max_page})
                 </span>
               )}
             </Typography>
           </div>
 
-          <div className='rounded-lg border bg-amber-50/80 px-3 py-2 dark:bg-amber-950/25'>
-            <Typography
-              variant='c2'
-              className='uppercase tracking-wide text-amber-800 dark:text-amber-100'
-            >
+          <div className='rounded-lg border px-3 py-2'>
+            <Typography variant='c2' className='text-muted-foreground'>
               Most recent
             </Typography>
             <Typography variant='b3' className='mt-1'>
@@ -287,7 +281,7 @@ function ExpenseRow({
             </Typography>
 
             {expense.category && (
-              <span className='inline-flex items-center rounded-full bg-blue-100 px-2 py-0.5 text-[11px] font-medium text-blue-800 dark:bg-blue-950/50 dark:text-blue-100'>
+              <span className='bg-secondary text-secondary-foreground inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium'>
                 {expense.category}
               </span>
             )}
@@ -302,7 +296,7 @@ function ExpenseRow({
           </Typography>
 
           <div className='mt-1 flex flex-wrap items-center gap-2 text-[11px]'>
-            <span className='inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 font-medium text-emerald-800 dark:bg-emerald-950/50 dark:text-emerald-100'>
+            <span className='bg-secondary text-secondary-foreground inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-medium'>
               <User2 className='h-3 w-3' />
               {createdByYou
                 ? 'Added by you'
@@ -310,13 +304,13 @@ function ExpenseRow({
             </span>
 
             {showOwnerBadge && (
-              <span className='inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 font-medium text-amber-900 dark:bg-amber-950/60 dark:text-amber-100'>
+              <span className='bg-secondary text-secondary-foreground inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-medium'>
                 Owner entry
               </span>
             )}
 
             {hasReceipt && (
-              <span className='inline-flex items-center gap-1 rounded-full bg-purple-100 px-2 py-0.5 font-medium text-purple-900 dark:bg-purple-950/60 dark:text-purple-100'>
+              <span className='bg-secondary text-secondary-foreground inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-medium'>
                 Receipt attached
               </span>
             )}

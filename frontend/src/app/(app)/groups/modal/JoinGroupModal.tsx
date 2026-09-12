@@ -139,7 +139,7 @@ export function JoinGroupModal({ children }: JoinGroupModalProps) {
               <ModalFooter className='gap-2'>
                 <Button
                   type='button'
-                  variant='outline'
+                  variant='outlineblack'
                   className='w-full'
                   onClick={handleClose}
                   disabled={isLoading}

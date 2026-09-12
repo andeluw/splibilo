@@ -1,12 +1,14 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import { Crown, Users2 } from 'lucide-react';
+import { Crown, Link2Icon, Users2 } from 'lucide-react';
 import { useParams, useSearchParams } from 'next/navigation';
 import * as React from 'react';
 
 import api from '@/lib/api';
+import { copyToClipboardWithToast } from '@/lib/helper';
 
+import { Button } from '@/components/button';
 import { Card, CardContent } from '@/components/card';
 import withAuth from '@/components/hoc/withAuth';
 import UserLayout from '@/components/layout/user/user-layout';
@@ -127,14 +129,15 @@ function GroupDetailPage() {
                 <div>
                   <div className='flex items-center gap-2'>
                     <Typography
+                      as='h1'
                       variant='h1'
-                      className='font-bold text-primary-800 dark:text-primary-50'
+                      className='text-primary-800 dark:text-primary-200'
                     >
                       {group.name}
                     </Typography>
 
                     {isOwner && (
-                      <span className='inline-flex items-center gap-1 rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-[11px] font-medium text-amber-800 dark:border-amber-900/50 dark:bg-amber-950/40 dark:text-amber-100'>
+                      <span className='border-primary-200 bg-primary-100 text-primary-800 dark:border-primary-900/50 dark:bg-primary-900/50 dark:text-primary-100 inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-medium'>
                         <Crown className='h-3 w-3' />
                         Owner
                       </span>
@@ -157,17 +160,49 @@ function GroupDetailPage() {
                       </span>
                     )}
                     {group.is_archived && (
-                      <span className='inline-flex items-center rounded-full border border-amber-200 bg-amber-50 px-2.5 py-0.5 text-[11px] font-medium text-amber-800 dark:border-amber-900/40 dark:bg-amber-950/40 dark:text-amber-100'>
+                      <span className='bg-muted text-muted-foreground inline-flex items-center rounded-full border px-2.5 py-0.5 text-[11px] font-medium'>
                         Archived
                       </span>
                     )}
                     {group.is_locked && (
-                      <span className='inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-2.5 py-0.5 text-[11px] font-medium text-slate-800 dark:border-slate-800 dark:bg-slate-950/50 dark:text-slate-100'>
+                      <span className='bg-muted text-muted-foreground inline-flex items-center rounded-full border px-2.5 py-0.5 text-[11px] font-medium'>
                         Locked
                       </span>
                     )}
                   </div>
                 </div>
+              </div>
+
+              {/* Invite + members */}
+              <div className='flex flex-col items-start gap-2 sm:items-end'>
+                <div className='text-muted-foreground flex items-center gap-1.5 text-xs'>
+                  <Users2 className='h-3.5 w-3.5' aria-hidden />
+                  {group.group_members.length} members
+                </div>
+                {group.invite_code && (
+                  <div className='flex items-center gap-2'>
+                    <span className='figure bg-muted rounded-md border px-2.5 py-1 text-sm font-semibold tracking-wide'>
+                      {group.invite_code}
+                    </span>
+                    <Button
+                      type='button'
+                      variant='ghost'
+                      size='sm'
+                      className='h-8 px-2'
+                      leftIcon={Link2Icon}
+                      onClick={() =>
+                        group.invite_code &&
+                        copyToClipboardWithToast(group.invite_code, {
+                          successMessage:
+                            'Invite code copied. Share it with your friends!',
+                          errorMessage: 'Could not copy invite code',
+                        })
+                      }
+                    >
+                      Copy
+                    </Button>
+                  </div>
+                )}
               </div>
             </div>
 

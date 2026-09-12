@@ -3,7 +3,7 @@ import { Metadata } from 'next';
 export const siteConfig = {
   title: 'Splibilo',
   description:
-    'Splibilo makes splitting expenses simple, fair, and stress-free. Track shared costs, settle smoothly, and keep friendships light.',
+    'Splibilo tracks shared expenses for groups: scan a receipt, split it evenly or by custom shares, and get the shortest list of payments that clears every balance.',
   url: process.env.SITE_URL ?? 'http://localhost:3000',
 };
 
@@ -20,6 +20,7 @@ export const seoConfig = ({
   ...props
 }: seoConfigType) => {
   const metadata: Metadata = {
+    metadataBase: new URL(siteConfig.url),
     applicationName: siteConfig.title,
     title: {
       default: title ? title : siteConfig.title,
@@ -29,21 +30,10 @@ export const seoConfig = ({
     robots: { index: true, follow: true },
     icons: {
       icon: [
-        {
-          url: '/favicon.ico',
-        },
-        // {
-        //   url: '/favicon-16x16.png',
-        //   sizes: '16x16',
-        //   type: 'image/png',
-        // },
-        // {
-        //   url: '/favicon-32x32.png',
-        //   sizes: '32x32',
-        //   type: 'image/png',
-        // },
+        { url: '/favicon.ico' },
+        { url: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
+        { url: '/icons/icon-512.png', sizes: '512x512', type: 'image/png' },
       ],
-      // shortcut: '/icons/favicon-16x16.png',
       apple: '/icons/apple-touch-icon.png',
     },
     manifest: `/manifest.json`,

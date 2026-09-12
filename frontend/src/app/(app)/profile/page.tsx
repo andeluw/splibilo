@@ -126,8 +126,9 @@ function ProfilePage() {
       <section className='flex flex-col gap-6'>
         <div className='flex flex-col gap-2'>
           <Typography
+            as='h1'
             variant='h1'
-            className='font-bold text-primary-800 dark:text-primary-50'
+            className='text-primary-800 dark:text-primary-200'
           >
             Profile
           </Typography>

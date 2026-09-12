@@ -96,7 +96,7 @@ export function SettingsTab({ group, isOwner, groupId }: SettingsTabProps) {
           <div className='rounded-lg border bg-card/70 px-3 py-2'>
             <Typography
               variant='c2'
-              className='uppercase tracking-wide text-muted-foreground'
+              className='text-muted-foreground'
             >
               Group name
             </Typography>
@@ -109,7 +109,7 @@ export function SettingsTab({ group, isOwner, groupId }: SettingsTabProps) {
             <div className='rounded-lg border bg-card/70 px-3 py-2'>
               <Typography
                 variant='c2'
-                className='uppercase tracking-wide text-muted-foreground'
+                className='text-muted-foreground'
               >
                 Description
               </Typography>
@@ -122,7 +122,7 @@ export function SettingsTab({ group, isOwner, groupId }: SettingsTabProps) {
           <div className='rounded-lg border bg-card/70 px-3 py-2'>
             <Typography
               variant='c2'
-              className='uppercase tracking-wide text-muted-foreground'
+              className='text-muted-foreground'
             >
               Category
             </Typography>
@@ -227,8 +227,8 @@ function PermissionRow({ label, enabled, helper }: PermissionRowProps) {
         <span
           className={
             enabled
-              ? 'inline-flex items-center rounded-full bg-emerald-50 px-2.5 py-0.5 text-[11px] font-medium text-emerald-800 dark:bg-emerald-950/50 dark:text-emerald-200'
-              : 'inline-flex items-center rounded-full bg-slate-50 px-2.5 py-0.5 text-[11px] font-medium text-slate-700 dark:bg-slate-900/70 dark:text-slate-200'
+              ? 'bg-credit-soft text-credit inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-medium'
+              : 'bg-muted text-muted-foreground inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-medium'
           }
         >
           {enabled ? 'Enabled' : 'Disabled'}

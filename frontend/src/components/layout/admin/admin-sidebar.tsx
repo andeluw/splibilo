@@ -44,7 +44,10 @@ export function AdminSidebar(props: React.ComponentProps<typeof Sidebar>) {
                 height={32}
                 className='h-8 w-8 rounded-md'
               />
-              <Typography variant='h3' className='font-bold text-primary-800'>
+              <Typography
+                variant='h3'
+                className='text-primary-800 font-bold dark:text-primary-200'
+              >
                 Splibilo
               </Typography>
             </Link>

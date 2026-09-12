@@ -172,21 +172,15 @@ export function SettlementsTab({
 
         <CardContent className='space-y-3 text-sm'>
           {/* Total settled */}
-          <div className='rounded-lg border bg-emerald-50/80 px-3 py-2 dark:bg-emerald-950/25'>
-            <Typography
-              variant='c2'
-              className='uppercase tracking-wide text-emerald-800 dark:text-emerald-200'
-            >
+          <div className='rounded-lg border px-3 py-2'>
+            <Typography variant='c2' className='text-muted-foreground'>
               Total settled
             </Typography>
             <Typography variant='s2' className='mt-1 font-semibold'>
               {numberToCurrency(totalAmountSettled)}
             </Typography>
             {totalCount > 0 && (
-              <Typography
-                variant='c2'
-                className='mt-0.5 text-xs text-emerald-900/80 dark:text-emerald-100/80'
-              >
+              <Typography variant='c2' className='text-muted-foreground mt-0.5 text-xs'>
                 Across {totalCount} settlement
                 {totalCount > 1 ? 's' : ''}
               </Typography>
@@ -194,23 +188,20 @@ export function SettlementsTab({
           </div>
 
           {/* Your movement */}
-          <div className='rounded-lg border bg-sky-50/80 px-3 py-2 dark:bg-sky-950/25'>
-            <Typography
-              variant='c2'
-              className='uppercase tracking-wide text-sky-800 dark:text-sky-200'
-            >
+          <div className='rounded-lg border px-3 py-2'>
+            <Typography variant='c2' className='text-muted-foreground'>
               Your movement
             </Typography>
             <div className='mt-1 space-y-0.5'>
               <Typography variant='b3' className='flex items-center gap-1'>
-                <ArrowUpRight className='h-3 w-3 text-red-700 dark:text-red-300' />
+                <ArrowUpRight className='text-owed h-3 w-3' />
                 <span className='text-muted-foreground'>You paid</span>
                 <span className='font-semibold text-foreground'>
                   {numberToCurrency(totalPaidByMe)}
                 </span>
               </Typography>
               <Typography variant='b3' className='flex items-center gap-1'>
-                <ArrowDownRight className='h-3 w-3 text-emerald-700 dark:text-emerald-300' />
+                <ArrowDownRight className='text-credit h-3 w-3' />
                 <span className='text-muted-foreground'>You received</span>
                 <span className='font-semibold text-foreground'>
                   {numberToCurrency(totalReceivedByMe)}
@@ -220,11 +211,8 @@ export function SettlementsTab({
           </div>
 
           {/* Most recent */}
-          <div className='rounded-lg border bg-amber-50/80 px-3 py-2 dark:bg-amber-950/25'>
-            <Typography
-              variant='c2'
-              className='uppercase tracking-wide text-amber-800 dark:text-amber-100'
-            >
+          <div className='rounded-lg border px-3 py-2'>
+            <Typography variant='c2' className='text-muted-foreground'>
               Most recent settlement
             </Typography>
             <Typography variant='b3' className='mt-1'>
@@ -361,9 +349,9 @@ function SettlementRow({ settlement, currentUserId }: SettlementRowProps) {
   const isOutgoingForYou = Boolean(youAreSender && !youAreReceiver);
 
   const rowColorClass = isIncomingForYou
-    ? 'border-emerald-200/80 bg-emerald-50/80 dark:border-emerald-900/60 dark:bg-emerald-950/35'
+    ? 'bg-credit-soft border'
     : isOutgoingForYou
-      ? 'border-rose-200/80 bg-rose-50/80 dark:border-rose-900/60 dark:bg-rose-950/35'
+      ? 'bg-owed-soft border'
       : 'border-primary-100/80 bg-card/80 dark:border-primary-900/50';
 
   const [isLightboxOpen, setIsLightboxOpen] = React.useState(false);
@@ -389,28 +377,28 @@ function SettlementRow({ settlement, currentUserId }: SettlementRowProps) {
 
         <div className='mt-1 flex flex-wrap items-center gap-2 text-[11px]'>
           {notes && (
-            <span className='inline-flex items-center gap-1 rounded-full bg-amber-50 px-2 py-0.5 font-medium text-amber-800 dark:bg-amber-950/60 dark:text-amber-100'>
+            <span className='bg-secondary text-secondary-foreground inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-medium'>
               <FileText className='h-3 w-3' />
               {notes}
             </span>
           )}
 
           {settlement.proof_url && (
-            <span className='inline-flex items-center gap-1 rounded-full bg-purple-100 px-2 py-0.5 font-medium text-purple-900 dark:bg-purple-950/60 dark:text-purple-100'>
+            <span className='bg-secondary text-secondary-foreground inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-medium'>
               <CheckCircle2 className='h-3 w-3' />
               Proof attached
             </span>
           )}
 
           {isIncomingForYou && (
-            <span className='inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2 py-0.5 font-medium text-emerald-900 dark:bg-emerald-950/60 dark:text-emerald-100'>
+            <span className='bg-credit-soft text-credit inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-medium'>
               <ArrowDownRight className='h-3 w-3' />
               Incoming
             </span>
           )}
 
           {isOutgoingForYou && (
-            <span className='inline-flex items-center gap-1 rounded-full bg-rose-100 px-2 py-0.5 font-medium text-rose-900 dark:bg-rose-950/60 dark:text-rose-100'>
+            <span className='bg-owed-soft text-owed inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-medium'>
               <ArrowUpRight className='h-3 w-3' />
               Outgoing
             </span>

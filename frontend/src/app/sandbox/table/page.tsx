@@ -22,11 +22,21 @@ import SandboxLayout from '../containers/SandboxLayout';
 
 import { ApiResponse, PaginatedApiResponse } from '@/types/api';
 
+// useServerTable reads useSearchParams, which Next refuses to prerender
+// without a boundary above it.
+export default function Page() {
+  return (
+    <React.Suspense fallback={null}>
+      <TablePage />
+    </React.Suspense>
+  );
+}
+
 type UserFilter = {
   country: string[];
 };
 
-export default function TablePage() {
+function TablePage() {
   const renderCount = useRenderCount();
 
   //#region  //*=========== Table Definition ===========

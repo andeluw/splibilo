@@ -167,17 +167,21 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             )}
 
             {type === 'password' && (
-              <div
+              <button
+                type='button'
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                aria-pressed={showPassword}
                 className={cn(
                   'absolute bottom-0 right-0 h-full',
                   'flex items-center justify-center pr-3',
                   'text-lg text-muted-foreground md:text-xl cursor-pointer',
+                  'transition-colors duration-200 hover:text-foreground',
                   rightIconClassName,
                 )}
                 onClick={() => setShowPassword(!showPassword)}
               >
                 {showPassword ? <Eye /> : <EyeOff />}
-              </div>
+              </button>
             )}
           </div>
 

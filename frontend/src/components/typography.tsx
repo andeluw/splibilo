@@ -80,12 +80,12 @@ const Typography = React.forwardRef(function Typography<
       className={cn(
         //#region  //*=========== Variants ===========
         [
-          variant === 'j1' && ['text-4xl font-bold'],
-          variant === 'j2' && ['text-3xl font-bold'],
-          variant === 'h1' && ['text-2xl font-semibold'],
-          variant === 'h2' && ['text-xl font-semibold'],
-          variant === 'h3' && ['text-lg font-semibold'],
-          variant === 'h4' && ['text-base font-bold'],
+          variant === 'j1' && ['font-display text-4xl font-bold'],
+          variant === 'j2' && ['font-display text-3xl font-bold'],
+          variant === 'h1' && ['font-display text-2xl font-semibold'],
+          variant === 'h2' && ['font-display text-xl font-semibold'],
+          variant === 'h3' && ['font-display text-lg font-semibold'],
+          variant === 'h4' && ['font-display text-base font-bold'],
           variant === 'h5' && ['text-base font-semibold'],
           variant === 'h6' && ['text-sm font-semibold'],
           variant === 's1' && ['text-lg font-medium'],

@@ -3,7 +3,8 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { format as formatDate, subDays, subMonths } from 'date-fns';
-import { ArrowUpRight, UsersIcon } from 'lucide-react';
+import { ChevronRight, UsersIcon } from 'lucide-react';
+import Link from 'next/link';
 import * as React from 'react';
 import {
   Area,
@@ -17,6 +18,7 @@ import {
 } from 'recharts';
 
 import api from '@/lib/api';
+import { getCategoryColor } from '@/lib/category-color';
 import { numberToCurrency } from '@/lib/helper';
 import { cn } from '@/lib/utils';
 
@@ -29,7 +31,6 @@ import {
   ChartTooltipContent,
 } from '@/components/chart';
 import withAuth from '@/components/hoc/withAuth';
-import { IconLink } from '@/components/icon-link';
 import UserLayout from '@/components/layout/user/user-layout';
 import { Typography } from '@/components/typography';
 
@@ -113,20 +114,6 @@ type UserActivity = {
 type RangePreset = '7d' | '1m' | '3m' | '6m';
 
 // ===== Helpers =====
-function getCategoryColor(category: string): string {
-  const map: Record<string, string> = {
-    Transport: '#F97316', // orange
-    Activities: '#0EA5E9', // sky
-    Accommodation: '#8B5CF6', // violet
-    Food: '#EC4899', // pink
-    Entertainment: '#F43F5E', // red
-    Shopping: '#14B8A6', // teal
-    Others: '#A3A3A3', // gray
-  };
-
-  return map[category] ?? '#A3A3A3';
-}
-
 function formatMonthLabel(month: string) {
   // month: "2025-12"
   try {
@@ -182,11 +169,11 @@ function UserActivityPage() {
   });
 
   return (
-    <UserLayout backHref='/groups'>
+    <UserLayout>
       <section className='flex flex-col gap-6'>
         <header className='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
           <div className='space-y-1'>
-            <Typography as='h1' variant='h1' className='text-primary-800'>
+            <Typography as='h1' variant='h1' className='text-primary-800 dark:text-primary-200'>
               Your activity
             </Typography>
             <Typography variant='b3' className='text-muted-foreground'>
@@ -317,10 +304,8 @@ function NetPositionCard({ period, totals }: NetPositionCardProps) {
     <Card
       className={cn(
         'shadow-sm',
-        balanceState === 'credit' &&
-          'border-emerald-300/70 bg-emerald-50/70 dark:border-emerald-500/40 dark:bg-emerald-950/25',
-        balanceState === 'debt' &&
-          'border-red-300/70 bg-red-50/70 dark:border-red-500/40 dark:bg-red-950/25',
+        balanceState === 'credit' && 'bg-credit-soft border',
+        balanceState === 'debt' && 'bg-owed-soft border',
         balanceState === 'settled' &&
           'border-primary-100/70 bg-primary-50/50 dark:border-primary-900/40 dark:bg-primary-950/20',
       )}
@@ -328,7 +313,7 @@ function NetPositionCard({ period, totals }: NetPositionCardProps) {
       <CardHeader className='flex flex-row items-start justify-between gap-3'>
         <div>
           <CardTitle>Your overall position</CardTitle>
-          <Typography variant='b2' className='text-secondary font-semibold'>
+          <Typography variant='b2' className='text-muted-foreground font-semibold'>
             From {fromLabel} to {toLabel}
           </Typography>
           <Typography variant='b3' className='text-muted-foreground'>
@@ -336,20 +321,14 @@ function NetPositionCard({ period, totals }: NetPositionCardProps) {
             groups. It does not include the full bills you paid.
           </Typography>
         </div>
-        {period.applied && (
-          <span className='rounded-full bg-background/80 px-3 py-1 text-xs font-medium text-muted-foreground'>
-            Filtered
-          </span>
-        )}
       </CardHeader>
       <CardContent>
         <Typography
           variant='s1'
           className={cn(
             'font-semibold',
-            balanceState === 'debt' && 'text-red-600 dark:text-red-400',
-            balanceState === 'credit' &&
-              'text-emerald-600 dark:text-emerald-400',
+            balanceState === 'debt' && 'text-owed',
+            balanceState === 'credit' && 'text-credit',
             balanceState === 'settled' &&
               'text-primary-700 dark:text-primary-200',
           )}
@@ -364,7 +343,7 @@ function NetPositionCard({ period, totals }: NetPositionCardProps) {
           <div className='rounded-lg border bg-background px-4 py-3'>
             <Typography
               variant='c1'
-              className='uppercase tracking-wide text-muted-foreground'
+              className='text-muted-foreground'
             >
               Your expense share
             </Typography>
@@ -375,7 +354,7 @@ function NetPositionCard({ period, totals }: NetPositionCardProps) {
           <div className='rounded-lg border bg-background px-4 py-3'>
             <Typography
               variant='c1'
-              className='uppercase tracking-wide text-muted-foreground'
+              className='text-muted-foreground'
             >
               Settlements you paid
             </Typography>
@@ -386,7 +365,7 @@ function NetPositionCard({ period, totals }: NetPositionCardProps) {
           <div className='rounded-lg border bg-background px-4 py-3'>
             <Typography
               variant='c1'
-              className='uppercase tracking-wide text-muted-foreground'
+              className='text-muted-foreground'
             >
               Settlements you received
             </Typography>
@@ -453,24 +432,21 @@ function ActivityAnalyticsCard({
       </CardHeader>
       <CardContent className='space-y-4'>
         {/* Tiny summary */}
-        <div className='rounded-lg border bg-amber-50/80 px-3 py-3 dark:bg-amber-950/25'>
-          <Typography
-            variant='c1'
-            className='uppercase tracking-wide text-amber-800'
-          >
+        <div className='rounded-lg border px-3 py-3'>
+          <Typography variant='c1' className='text-muted-foreground'>
             This period
           </Typography>
           <Typography variant='b3' className='mt-1'>
             You contributed{' '}
-            <span className='font-semibold text-red-700'>
+            <span className='text-foreground font-semibold'>
               {numberToCurrency(totals.my_total_expense_share)}
             </span>{' '}
             in expenses, paid{' '}
-            <span className='font-semibold text-emerald-700'>
+            <span className='text-foreground font-semibold'>
               {numberToCurrency(totals.my_total_settlements_out)}
             </span>{' '}
             to others, and received{' '}
-            <span className='font-semibold text-emerald-700'>
+            <span className='text-foreground font-semibold'>
               {numberToCurrency(totals.my_total_settlements_in)}
             </span>{' '}
             back.
@@ -482,7 +458,7 @@ function ActivityAnalyticsCard({
           <div className='space-y-2'>
             <Typography
               variant='c1'
-              className='uppercase tracking-wide text-muted-foreground'
+              className='text-muted-foreground'
             >
               Monthly activity
             </Typography>
@@ -548,7 +524,7 @@ function ActivityAnalyticsCard({
           <div className='space-y-2'>
             <Typography
               variant='c1'
-              className='uppercase tracking-wide text-muted-foreground'
+              className='text-muted-foreground'
             >
               Spending by category
             </Typography>
@@ -635,7 +611,7 @@ function RecentActivityCard({
           <div className='space-y-2'>
             <Typography
               variant='c1'
-              className='uppercase tracking-wide text-muted-foreground'
+              className='text-muted-foreground'
             >
               Expenses involving you
             </Typography>
@@ -643,9 +619,10 @@ function RecentActivityCard({
               {latestExpenses.map((e) => {
                 const dateLabel = formatDate(new Date(e.date), 'd MMM yyyy');
                 return (
-                  <div
+                  <Link
                     key={e.id}
-                    className='flex flex-wrap items-start justify-between gap-2 rounded-lg border bg-background px-3 py-2'
+                    href={`/groups/${e.group_id}/expenses/${e.id}`}
+                    className='group bg-background hover:bg-accent/50 flex flex-wrap items-start justify-between gap-2 rounded-lg border px-3 py-2 transition-colors'
                   >
                     <div className='flex min-w-0 flex-1 flex-col'>
                       <Typography variant='b3' className='font-medium'>
@@ -674,12 +651,12 @@ function RecentActivityCard({
                           Your share
                         </Typography>
                       </div>
-                      <IconLink
-                        href={`/groups/${e.group_id}/expenses/${e.id}`}
-                        icon={ArrowUpRight}
+                      <ChevronRight
+                        aria-hidden
+                        className='text-muted-foreground h-4 w-4 shrink-0 transition-transform duration-200 group-hover:translate-x-0.5'
                       />
                     </div>
-                  </div>
+                  </Link>
                 );
               })}
             </div>
@@ -690,7 +667,7 @@ function RecentActivityCard({
           <div className='space-y-2'>
             <Typography
               variant='c1'
-              className='uppercase tracking-wide text-muted-foreground'
+              className='text-muted-foreground'
             >
               Settlements involving you
             </Typography>
@@ -700,13 +677,12 @@ function RecentActivityCard({
                 const isIncoming = s.direction === 'incoming';
 
                 return (
-                  <div
+                  <Link
                     key={s.id}
+                    href={`/groups/${s.group_id}`}
                     className={cn(
-                      'flex flex-wrap items-start justify-between gap-2 rounded-lg border px-3 py-2',
-                      isIncoming
-                        ? 'bg-emerald-50/80 dark:bg-emerald-950/25'
-                        : 'bg-red-50/80 dark:bg-red-950/25',
+                      'group flex flex-wrap items-start justify-between gap-2 rounded-lg border px-3 py-2 transition hover:brightness-95',
+                      isIncoming ? 'bg-credit-soft' : 'bg-owed-soft',
                     )}
                   >
                     <div className='flex min-w-0 flex-1 flex-col'>
@@ -728,9 +704,7 @@ function RecentActivityCard({
                           variant='b3'
                           className={cn(
                             'font-semibold',
-                            isIncoming
-                              ? 'text-emerald-700 dark:text-emerald-300'
-                              : 'text-red-700 dark:text-red-300',
+                            isIncoming ? 'text-credit' : 'text-owed',
                           )}
                         >
                           {numberToCurrency(s.amount)}
@@ -742,12 +716,12 @@ function RecentActivityCard({
                           {isIncoming ? 'You received' : 'You paid'}
                         </Typography>
                       </div>
-                      <IconLink
-                        href={`/groups/${s.group_id}`}
-                        icon={ArrowUpRight}
+                      <ChevronRight
+                        aria-hidden
+                        className='text-muted-foreground h-4 w-4 shrink-0 transition-transform duration-200 group-hover:translate-x-0.5'
                       />
                     </div>
-                  </div>
+                  </Link>
                 );
               })}
             </div>
@@ -799,10 +773,11 @@ function TopGroupsCard({ topGroups }: TopGroupsCardProps) {
               : 'bg-card border-border/80';
 
           return (
-            <div
+            <Link
               key={g.group_id}
+              href={`/groups/${g.group_id}`}
               className={cn(
-                'flex items-center justify-between rounded-xl border px-3 py-2 shadow-sm transition-colors',
+                'group flex items-center justify-between rounded-xl border px-3 py-2 shadow-sm transition hover:brightness-95',
                 rowClass,
               )}
             >
@@ -814,7 +789,7 @@ function TopGroupsCard({ topGroups }: TopGroupsCardProps) {
                   <Typography variant='b3' className='font-medium'>
                     {g.group_name}
                   </Typography>
-                  <span className='text-[11px] leading-3 text-slate-600 dark:text-slate-300'>
+                  <span className='text-muted-foreground text-[11px] leading-3'>
                     {g.expenses_count} expenses • {g.settlements_count}{' '}
                     settlements
                   </span>
@@ -825,20 +800,23 @@ function TopGroupsCard({ topGroups }: TopGroupsCardProps) {
                 <div className='text-right'>
                   <Typography
                     variant='b3'
-                    className='font-semibold text-slate-900 dark:text-slate-50'
+                    className='text-foreground font-semibold'
                   >
                     {numberToCurrency(g.total_expense_share)}
                   </Typography>
                   <Typography
                     variant='c2'
-                    className='text-[11px] text-slate-600 dark:text-slate-300'
+                    className='text-muted-foreground text-[11px]'
                   >
                     Your share in this group
                   </Typography>
                 </div>
-                <IconLink href={`/groups/${g.group_id}`} icon={ArrowUpRight} />
+                <ChevronRight
+                  aria-hidden
+                  className='text-muted-foreground h-4 w-4 shrink-0 transition-transform duration-200 group-hover:translate-x-0.5'
+                />
               </div>
-            </div>
+            </Link>
           );
         })}
       </CardContent>
@@ -867,7 +845,7 @@ function QuickStatsCard({ totals }: QuickStatsCardProps) {
           <div className='rounded-lg border bg-primary-50/80 px-3 py-3 dark:bg-primary-950/25'>
             <Typography
               variant='c1'
-              className='uppercase tracking-wide text-primary-800 dark:text-primary-100'
+              className='text-primary-800 dark:text-primary-100'
             >
               Overall position
             </Typography>
@@ -876,11 +854,8 @@ function QuickStatsCard({ totals }: QuickStatsCardProps) {
             </Typography>
           </div>
 
-          <div className='rounded-lg border bg-slate-50/80 px-3 py-3 dark:bg-slate-950/25'>
-            <Typography
-              variant='c1'
-              className='uppercase tracking-wide text-slate-800 dark:text-slate-100'
-            >
+          <div className='rounded-lg border px-3 py-3'>
+            <Typography variant='c1' className='text-muted-foreground'>
               Total flow
             </Typography>
             <Typography variant='s2' className='mt-1 font-semibold'>
@@ -893,22 +868,16 @@ function QuickStatsCard({ totals }: QuickStatsCardProps) {
           </div>
         </div>
 
-        <div className='rounded-xl border border-blue-200/80 bg-blue-50/85 p-3 dark:border-blue-900/70 dark:bg-blue-950/45'>
+        <div className='bg-primary-50/80 dark:bg-primary-950/25 rounded-xl border p-3'>
           <div className='flex items-center gap-2'>
-            <span className='flex h-7 w-7 items-center justify-center rounded-full bg-blue-500 text-blue-50 dark:bg-blue-400 dark:text-blue-950'>
+            <span className='bg-primary-600 text-primary-50 dark:bg-primary-500 dark:text-primary-950 flex h-7 w-7 items-center justify-center rounded-full'>
               <UsersIcon className='h-3.5 w-3.5' />
             </span>
-            <Typography
-              variant='c1'
-              className='uppercase tracking-wide text-blue-900 dark:text-blue-50'
-            >
+            <Typography variant='c1' className='text-foreground'>
               Tip
             </Typography>
           </div>
-          <Typography
-            variant='b3'
-            className='mt-2 text-blue-900 dark:text-blue-50'
-          >
+          <Typography variant='b3' className='text-muted-foreground mt-2'>
             Use group settlements regularly so your overall position does not
             drift too far in either direction.
           </Typography>

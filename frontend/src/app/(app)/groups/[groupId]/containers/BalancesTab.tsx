@@ -95,17 +95,11 @@ export function BalancesTab({ group, groupId }: BalancesTabProps) {
 
         <CardContent>
           {debts.length === 0 ? (
-            <div className='rounded-lg border bg-green-50/80 px-3 py-3 dark:border-emerald-900/60 dark:bg-emerald-950/40'>
-              <Typography
-                variant='c1'
-                className='text-emerald-800 dark:text-emerald-100'
-              >
+            <div className='bg-credit-soft rounded-lg border px-3 py-3'>
+              <Typography variant='c1' className='text-credit'>
                 Everyone is settled up.
               </Typography>
-              <Typography
-                variant='c2'
-                className='mt-1 text-emerald-900/80 dark:text-emerald-200/90'
-              >
+              <Typography variant='c2' className='text-credit/80 mt-1'>
                 No one owes anyone in this group right now.
               </Typography>
             </div>
@@ -134,19 +128,13 @@ export function BalancesTab({ group, groupId }: BalancesTabProps) {
 
         <CardContent className='space-y-4'>
           {/* You should pay */}
-          <div className='rounded-lg border bg-red-50/80 px-3 py-3 dark:border-red-900/60 dark:bg-red-950/40'>
-            <Typography
-              variant='c1'
-              className='uppercase tracking-wide text-red-800 dark:text-red-100'
-            >
+          <div className='bg-owed-soft rounded-lg border px-3 py-3'>
+            <Typography variant='c1' className='text-owed'>
               You should pay
             </Typography>
 
             {me.should_pay.length === 0 ? (
-              <Typography
-                variant='c2'
-                className='mt-1 text-red-900/80 dark:text-red-200/90'
-              >
+              <Typography variant='c2' className='text-owed/80 mt-1'>
                 You don&apos;t owe anyone in this group.
               </Typography>
             ) : (
@@ -164,19 +152,13 @@ export function BalancesTab({ group, groupId }: BalancesTabProps) {
           </div>
 
           {/* You should receive */}
-          <div className='rounded-lg border bg-emerald-50/80 px-3 py-3 dark:border-emerald-900/60 dark:bg-emerald-950/40'>
-            <Typography
-              variant='c1'
-              className='uppercase tracking-wide text-emerald-800 dark:text-emerald-100'
-            >
+          <div className='bg-credit-soft rounded-lg border px-3 py-3'>
+            <Typography variant='c1' className='text-credit'>
               You should receive
             </Typography>
 
             {me.should_receive.length === 0 ? (
-              <Typography
-                variant='c2'
-                className='mt-1 text-emerald-900/80 dark:text-emerald-200/90'
-              >
+              <Typography variant='c2' className='text-credit/80 mt-1'>
                 No one owes you at the moment.
               </Typography>
             ) : (

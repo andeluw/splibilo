@@ -22,14 +22,14 @@ const buttonVariants = [
 ] as ButtonVariant[];
 
 const buttonClassName = cva(
-  'cursor-pointer inline-flex items-center justify-center rounded-md font-semibold transition-colors duration-75 shadow-xs disabled:cursor-not-allowed focus:outline-hidden focus-visible:ring [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
+  'cursor-pointer inline-flex items-center justify-center rounded-md font-semibold transition-colors duration-200 shadow-xs disabled:cursor-not-allowed disabled:opacity-45 focus:outline-hidden focus-visible:ring [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
   {
     variants: {
       variant: {
         primary:
-          'bg-primary-700 text-white border border-primary-700 hover:bg-primary-900 hover:text-white active:bg-primary-950 disabled:bg-primary-900 focus-visible:ring-primary-800',
+          'bg-primary-700 text-white border border-primary-700 hover:bg-primary-800 hover:text-white active:bg-primary-900 disabled:bg-primary-700 focus-visible:ring-primary-800',
         secondary:
-          'bg-primary-500 text-white border border-primary-600 hover:bg-primary-600 hover:text-white active:bg-primary-700 disabled:bg-primary-700 focus-visible:ring-primary-500',
+          'bg-primary-500 text-white border border-primary-600 hover:bg-primary-600 hover:text-white active:bg-primary-700 disabled:bg-primary-500 focus-visible:ring-primary-500',
         outline:
           'text-primary-500 border border-primary-500 hover:bg-primary-50 active:bg-primary-100 disabled:bg-primary-100 focus-visible:ring-primary-500',
         ghost:
@@ -38,12 +38,11 @@ const buttonClassName = cva(
           'bg-white text-gray-700 border border-gray-300 hover:text-dark hover:bg-gray-100 active:bg-white/80 disabled:bg-gray-200 focus-visible:ring-gray-300',
         dark: 'bg-primary text-primary-foreground shadow hover:bg-primary/90 text-sm  disabled:bg-primary/90',
         destructive:
-          'bg-destructive text-primary-foreground shadow-sm hover:bg-destructive/90 disabled:bg-destructive/90 focus-visible:ring-destructive border-destructive',
+          'bg-destructive text-white shadow-sm hover:bg-destructive/90 disabled:bg-destructive/90 focus-visible:ring-destructive border-destructive',
         outlineblack:
           'border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground',
-        // 'text-black border-2 border-black hover:bg-gray-50 active:bg-gray-100 disabled:bg-gray-100 focus-visible:ring-gray-300',
         ghostblack:
-          'hover:bg-accent hover:text-accent-foreground text-black shadow-none active:bg-accent/50 disabled:bg-accent/50',
+          'hover:bg-accent hover:text-accent-foreground text-foreground shadow-none active:bg-accent/50 disabled:bg-accent/50',
       },
       size: {
         base: 'px-3 py-1.5 text-sm md:text-base',
@@ -106,7 +105,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         className={cn(
           buttonClassName({ variant, size }),
           isLoading &&
-          'relative text-transparent transition-none hover:text-transparent disabled:cursor-wait',
+            'relative text-transparent transition-none hover:text-transparent disabled:cursor-wait',
           className,
         )}
         {...rest}
@@ -121,9 +120,9 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
                   'secondary',
                   'dark',
                   'destructive',
-                  'outlineblack'
                 ].includes(variant as string),
-                'text-black': ['light'].includes(
+                'text-black': ['light'].includes(variant as string),
+                'text-foreground': ['outlineblack', 'ghostblack'].includes(
                   variant as string,
                 ),
                 'text-primary-500': ['outline', 'ghost'].includes(

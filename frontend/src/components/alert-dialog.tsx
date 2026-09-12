@@ -39,7 +39,7 @@ const AlertDialogContent = React.forwardRef<
         className={cn([
           'relative self-end sm:self-center',
           'duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
-          'bg-white w-full sm:max-w-lg border shadow-xl rounded',
+          'bg-popover text-popover-foreground w-full sm:max-w-lg border shadow-xl rounded',
           'flex flex-col gap-5 sm:gap-10 p-4 sm:p-6',
           className,
         ])}

@@ -9,7 +9,6 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useTheme } from 'next-themes';
 import * as React from 'react';
 
 import { cn } from '@/lib/utils';
@@ -28,6 +27,7 @@ import { NextImage } from '@/components/next-image';
 import { PrimaryLink } from '@/components/primary-link';
 import { ScrollArea } from '@/components/scroll-area';
 import { Separator } from '@/components/separator';
+import { ThemeToggle } from '@/components/theme-toggle';
 import {
   Sheet,
   SheetContent,
@@ -63,7 +63,6 @@ function getInitials(user?: User | null) {
 }
 
 function DesktopUserMenu({ user }: { user: User | null }) {
-  const logout = useAuthStore.useLogout();
   //#region  //*=========== Mutation ===========
   const { mutate: logoutMutation } = useLogoutMutation();
   //#endregion  //*======== Mutation ===========
@@ -73,17 +72,6 @@ function DesktopUserMenu({ user }: { user: User | null }) {
       <DropdownMenuTrigger asChild>
         <button className='flex items-center gap-2 rounded-lg border bg-card px-3 py-2 transition-colors hover:bg-accent'>
           <CircleUserRound className='h-6 w-6' />
-          {/* {user?.avatar_url ? (
-            <NextImage
-              src={user.avatar_url ?? '/images/default-avatar.png'}
-              alt={user.name ?? 'User avatar'}
-              width={32}
-              height={32}
-              className='h-8 w-8 rounded-full object-cover'
-            />
-          ) : (
-            <CircleUserRound className='h-6 w-6' />
-          )} */}
           <div className='flex flex-col items-start'>
             <Typography variant='s3' className='font-medium'>
               {user?.name ?? 'Signed in'}
@@ -136,7 +124,6 @@ export function Navbar() {
 
   const user = useAuthStore.useUser();
   const isAuthed = useAuthStore.useIsAuthed();
-  const logout = useAuthStore.useLogout();
 
   //#region  //*=========== Mutation ===========
   const { mutate: logoutMutation } = useLogoutMutation();
@@ -148,19 +135,16 @@ export function Navbar() {
     return pathname.startsWith(url);
   };
 
-  const { theme } = useTheme();
-
   return (
-    <header className='sticky top-0 z-50 w-full border-b bg-background/90 backdrop-blur'>
-      <div className='layout flex h-16 items-center justify-between gap-4 px-4 sm:h-20 sm:px-6 lg:px-8'>
+    <header className='bg-background/80 supports-[backdrop-filter]:bg-background/65 sticky top-0 z-50 w-full border-b backdrop-blur-md'>
+      <div className='layout-wide flex h-16 items-center justify-between gap-4 sm:h-20'>
         {/* Brand */}
-        <Link href='/' className='flex items-center gap-3'>
+        <Link
+          href='/'
+          className='flex items-center gap-2.5 transition-opacity duration-200 hover:opacity-80'
+        >
           <NextImage
-            src={
-              theme === 'dark'
-                ? '/images/logo/logo.png'
-                : '/images/logo/dark-logo.png'
-            }
+            src='/images/logo/logo.png'
             alt='Splibilo'
             className='h-8 w-8'
             width={32}
@@ -168,34 +152,38 @@ export function Navbar() {
             priority
           />
           <Typography
-            variant='h2'
-            className='hidden font-bold text-primary-800 sm:inline dark:text-primary-400'
+            variant='h3'
+            className='hidden font-semibold tracking-[-0.02em] sm:inline'
           >
             Splibilo
           </Typography>
         </Link>
 
         {/* Desktop nav */}
-        <nav className='hidden items-center gap-2 lg:flex'>
-          {mainNav.map((item) => (
-            <PrimaryLink
-              key={item.title}
-              href={item.url}
-              className={cn(
-                'rounded-md px-3 py-2 text-sm font-medium transition-colors',
-                isActive(item.url, item.exactMatch)
-                  ? 'bg-primary-50 text-primary-700'
-                  : 'text-muted-foreground hover:bg-accent hover:text-foreground',
-              )}
-            >
-              {item.title}
-            </PrimaryLink>
-          ))}
+        <nav className='hidden items-center gap-1 lg:flex'>
+          {mainNav.map((item) => {
+            const active = isActive(item.url, item.exactMatch);
+            return (
+              <PrimaryLink
+                key={item.title}
+                href={item.url}
+                aria-current={active ? 'page' : undefined}
+                className={cn(
+                  'rounded-md px-3 py-2 text-sm font-medium transition-colors duration-200',
+                  active
+                    ? 'bg-primary-50 text-primary-800 dark:bg-primary-900/50 dark:text-primary-100'
+                    : 'text-muted-foreground hover:bg-accent hover:text-foreground',
+                )}
+              >
+                {item.title}
+              </PrimaryLink>
+            );
+          })}
         </nav>
 
         {/* Right side (desktop) */}
         <div className='hidden items-center gap-3 lg:flex'>
-          {/* <ThemeToggle /> */}
+          <ThemeToggle />
 
           {isAuthed && user ? (
             <DesktopUserMenu user={user} />
@@ -211,7 +199,7 @@ export function Navbar() {
 
         {/* Mobile: theme + menu button */}
         <div className='flex items-center gap-2 lg:hidden'>
-          {/* <ThemeToggle /> */}
+          <ThemeToggle />
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild>
               <Button variant='outlineblack' size='icon' className='lg:hidden'>
@@ -253,21 +241,25 @@ export function Navbar() {
                 {/* Mobile nav items */}
                 <ScrollArea className='h-[50vh] pr-2'>
                   <nav className='flex flex-col gap-3'>
-                    {mainNav.map((item) => (
-                      <Link
-                        key={item.title}
-                        href={item.url}
-                        className={cn(
-                          'text-base font-medium',
-                          isActive(item.url, item.exactMatch)
-                            ? 'text-primary'
-                            : 'text-foreground',
-                        )}
-                        onClick={() => setIsOpen(false)}
-                      >
-                        {item.title}
-                      </Link>
-                    ))}
+                    {mainNav.map((item) => {
+                      const active = isActive(item.url, item.exactMatch);
+                      return (
+                        <Link
+                          key={item.title}
+                          href={item.url}
+                          aria-current={active ? 'page' : undefined}
+                          className={cn(
+                            'rounded-md px-3 py-2 text-base font-medium transition-colors duration-200',
+                            active
+                              ? 'bg-primary-50 text-primary-800 dark:bg-primary-900/50 dark:text-primary-100'
+                              : 'text-muted-foreground hover:text-foreground',
+                          )}
+                          onClick={() => setIsOpen(false)}
+                        >
+                          {item.title}
+                        </Link>
+                      );
+                    })}
                   </nav>
                 </ScrollArea>
 

@@ -244,12 +244,12 @@ const DropzoneInput = ({
                   <div className='space-y-3 text-center'>
                     <Upload
                       aria-hidden='true'
-                      className='mx-auto h-8 w-8 text-gray-400'
+                      className='text-muted-foreground mx-auto h-8 w-8'
                     />
-                    <p className='text-gray-500'>
+                    <p className='text-muted-foreground'>
                       Select or drag and drop files here to upload
                     </p>
-                    <p className='text-xs text-gray-500'>
+                    <p className='text-muted-foreground text-xs'>
                       {`${maxFiles - (files.length || 0)} files left`}
                     </p>
                   </div>
@@ -269,7 +269,7 @@ const DropzoneInput = ({
                 </HelperText>
               ) : null}
               {!readOnly && Boolean(files.length) && (
-                <ul className='mt-1 divide-y divide-gray-300 rounded-lg border border-gray-300'>
+                <ul className='divide-border mt-1 divide-y rounded-lg border'>
                   {files.map((file, index) => (
                     <FilePreview
                       deleteFile={deleteFile}

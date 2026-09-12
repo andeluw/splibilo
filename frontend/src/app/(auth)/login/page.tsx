@@ -1,11 +1,14 @@
 'use client';
 
+import { ArrowLeft } from 'lucide-react';
+import Link from 'next/link';
 import * as React from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 
 import { Button } from '@/components/button';
 import withAuth from '@/components/hoc/withAuth';
 import { Input } from '@/components/input';
+import { AuthAside } from '@/components/layout/auth/auth-aside';
 import { NextImage } from '@/components/next-image';
 import { PrimaryLink } from '@/components/primary-link';
 import { Typography } from '@/components/typography';
@@ -30,42 +33,57 @@ function LoginPage() {
   };
 
   return (
-    <div className='flex h-screen w-full overflow-hidden'>
-      <div className='flex w-full flex-col justify-center bg-background px-4 py-8 lg:w-1/2 h-screen'>
-        <div className='mx-auto flex w-full max-w-md flex-col justify-center px-4'>
-          <div className='mb-6 flex flex-col space-y-2 text-center lg:text-left'>
-            <div className='mb-8 flex justify-center lg:justify-start'>
-              <NextImage
-                useSkeleton
-                src='/images/logo/logo.png'
-                width={48}
-                height={48}
-                alt='Splibilo Logo'
-                className='h-12 w-12 lg:hidden'
-              />
-            </div>
-            <Typography variant='h1' className='font-bold text-primary-800'>
-              Login
-            </Typography>
-            <Typography variant='b2' className='text-muted-foreground'>
-              Login to your account to continue
-            </Typography>
-          </div>
+    <div className='grid min-h-dvh lg:grid-cols-[1.05fr_1fr]'>
+      <AuthAside />
+
+      <main
+        id='main'
+        className='bg-background flex flex-col justify-center px-6 py-10 sm:px-10'
+      >
+        <div className='mx-auto w-full max-w-md'>
+          <Link
+            href='/'
+            className='text-muted-foreground hover:text-foreground mb-10 inline-flex items-center gap-2 text-sm transition-colors duration-200'
+          >
+            <ArrowLeft className='h-4 w-4' strokeWidth={1.5} aria-hidden />
+            Back to home
+          </Link>
+
+          <NextImage
+            src='/images/logo/logo.png'
+            width={40}
+            height={40}
+            alt='Splibilo'
+            className='mb-6 h-10 w-10 lg:hidden'
+          />
+
+          <Typography
+            as='h1'
+            variant='j2'
+            className='text-3xl tracking-[-0.03em]'
+          >
+            Welcome back
+          </Typography>
+          <Typography variant='b3' className='text-muted-foreground mt-2'>
+            Sign in to pick up where your groups left off.
+          </Typography>
 
           <FormProvider {...methods}>
             <form
               onSubmit={handleSubmit(onSubmit)}
-              className='flex flex-col gap-4'
+              className='mt-8 flex flex-col gap-4'
             >
               <Input
                 id='email'
                 label='Email'
-                placeholder='Enter your email'
+                type='email'
+                autoComplete='email'
+                placeholder='you@example.com'
                 validation={{
                   required: 'Email is required',
                   pattern: {
                     value: REGEX.EMAIL,
-                    message: 'Invalid email address',
+                    message: 'Enter a valid email address',
                   },
                 }}
               />
@@ -73,7 +91,8 @@ function LoginPage() {
                 id='password'
                 label='Password'
                 type='password'
-                placeholder='Enter your password'
+                autoComplete='current-password'
+                placeholder='Your password'
                 validation={{
                   required: 'Password is required',
                 }}
@@ -81,44 +100,24 @@ function LoginPage() {
 
               <Button
                 type='submit'
-                className='mt-2 w-full'
+                size='md'
+                className='mt-3 w-full transition-transform duration-200 active:translate-y-px'
                 isLoading={isPending}
                 disabled={!isValid}
               >
-                Login
+                Sign in
               </Button>
             </form>
           </FormProvider>
 
-          <div className='mt-4 text-center text-sm text-muted-foreground'>
-            Don&apos;t have an account?{' '}
-            <PrimaryLink href='/register'>Register</PrimaryLink>
-          </div>
+          <Typography
+            variant='b3'
+            className='text-muted-foreground mt-8 text-center'
+          >
+            No account yet? <PrimaryLink href='/register'>Register</PrimaryLink>
+          </Typography>
         </div>
-      </div>
-
-      <div className='hidden w-1/2 flex-col items-center justify-center bg-gradient-to-r from-primary-500 to-primary-700 lg:flex'>
-        <NextImage
-          useSkeleton
-          src='/images/logo/logo-bg.png'
-          width={200}
-          height={200}
-          alt='Splibilo Branding'
-          className='mb-8 h-32 w-32'
-        />
-        <Typography
-          variant='h1'
-          className='text-center text-4xl font-bold text-background'
-        >
-          Splibilo
-        </Typography>
-        <Typography
-          variant='b1'
-          className='mt-4 max-w-md text-center text-background/90'
-        >
-          Manage your assets efficiently with Splibilo.
-        </Typography>
-      </div>
+      </main>
     </div>
   );
 }

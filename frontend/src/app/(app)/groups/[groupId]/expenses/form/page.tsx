@@ -300,7 +300,7 @@ function CreateExpensePage() {
       <section className='flex flex-col gap-8'>
         <div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
           <div className='flex flex-col gap-2'>
-            <Typography variant='h1' className='font-bold text-primary-800'>
+            <Typography as='h1' variant='h1' className='text-primary-800 dark:text-primary-200'>
               Add Expense
             </Typography>
             <Typography variant='b3' className='text-muted-foreground'>
@@ -441,7 +441,7 @@ function CreateExpensePage() {
                       <Button
                         type='button'
                         size='sm'
-                        variant='destructive'
+                        variant='outlineblack'
                         onClick={handleClearAll}
                         disabled={!members || members.length === 0}
                         rightIcon={X}
@@ -568,7 +568,7 @@ function CreateExpensePage() {
                     </div>
                   )}
 
-                <Typography variant='c2' className='text-amber-700'>
+                <Typography variant='c2' className='text-owed'>
                   *Make sure the sum of all shares equals the total amount.
                 </Typography>
               </div>

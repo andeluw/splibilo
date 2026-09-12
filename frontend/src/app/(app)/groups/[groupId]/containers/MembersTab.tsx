@@ -136,8 +136,8 @@ function RoleChip({ role }: RoleChipProps) {
 
   if (isOwner) {
     return (
-      <span className='inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-2.5 py-1 text-[11px] font-medium text-amber-900 dark:bg-amber-950/60 dark:text-amber-100'>
-        <span className='flex h-4 w-4 items-center justify-center rounded-full bg-amber-400/90 text-[10px] text-amber-50'>
+      <span className='bg-primary-100 text-primary-800 dark:bg-primary-900/50 dark:text-primary-100 inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium'>
+        <span className='bg-primary-600 text-primary-50 dark:bg-primary-500 dark:text-primary-950 flex h-4 w-4 items-center justify-center rounded-full text-[10px]'>
           <CrownIcon className='h-3 w-3' />
         </span>
         OWNER
@@ -146,8 +146,8 @@ function RoleChip({ role }: RoleChipProps) {
   }
 
   return (
-    <span className='inline-flex items-center gap-1.5 rounded-full bg-slate-50 px-2.5 py-1 text-[11px] font-medium text-slate-800 dark:bg-slate-900/70 dark:text-slate-100'>
-      <span className='flex h-4 w-4 items-center justify-center rounded-full bg-slate-300/90 text-[10px] text-slate-900'>
+    <span className='bg-muted text-muted-foreground inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium'>
+      <span className='bg-primary-100 text-primary-700 dark:bg-primary-900/60 dark:text-primary-200 flex h-4 w-4 items-center justify-center rounded-full text-[10px]'>
         <UsersIcon className='h-3 w-3' />
       </span>
       MEMBER

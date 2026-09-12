@@ -167,7 +167,7 @@ function CreateSettlementPage() {
       <section className='flex flex-col gap-8'>
         <div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
           <div className='flex flex-col gap-2'>
-            <Typography variant='h1' className='font-bold text-primary-800'>
+            <Typography as='h1' variant='h1' className='text-primary-800 dark:text-primary-200'>
               Add Settlement
             </Typography>
             <Typography variant='b3' className='text-muted-foreground'>

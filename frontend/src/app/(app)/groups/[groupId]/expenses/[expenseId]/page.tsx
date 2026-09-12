@@ -356,7 +356,7 @@ function ExpenseDetailPage() {
                           {numberToCurrency(totalShares)}
                         </span>
                         {sharesMismatch && amountNumber > 0 && (
-                          <span className='ml-1 text-amber-700'>
+                          <span className='ml-1 text-owed'>
                             (does not match total)
                           </span>
                         )}
@@ -431,7 +431,7 @@ function ExpenseDetailPage() {
                       </Button>
                     </div>
 
-                    <Typography variant='c2' className='text-amber-700'>
+                    <Typography variant='c2' className='text-owed'>
                       *Make sure the total of all shares equals the total amount
                       above.
                     </Typography>

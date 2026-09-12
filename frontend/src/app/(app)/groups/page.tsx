@@ -1,7 +1,7 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import { Search } from 'lucide-react';
+import { ChevronRight, Search } from 'lucide-react';
 import Link from 'next/link';
 import * as React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -74,10 +74,9 @@ function GroupsPage() {
   return (
     <UserLayout>
       <div className='flex flex-col gap-6'>
-        {/* Header */}
         <div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
           <div>
-            <Typography variant='h1' className='font-bold text-primary-800'>
+            <Typography as='h1' variant='h1' className='text-primary-800 dark:text-primary-200'>
               Your groups
             </Typography>
             <Typography
@@ -135,7 +134,6 @@ function GroupsPage() {
           </Card>
         </FormProvider>
 
-        {/* Loading skeleton */}
         {isLoadingGroupList && (
           <div className='grid gap-3 sm:grid-cols-2 lg:grid-cols-3'>
             {Array.from({ length: 3 }).map((_, i) => (
@@ -147,7 +145,6 @@ function GroupsPage() {
           </div>
         )}
 
-        {/* Error state */}
         {isErrorGroupList && !isLoadingGroupList && (
           <div className='rounded-lg border border-destructive/30 bg-destructive/5 px-4 py-3'>
             <Typography variant='c1' className='text-destructive'>
@@ -210,7 +207,6 @@ function GroupsPage() {
             </div>
           )}
 
-        {/* List */}
         {!isLoadingGroupList && !isErrorGroupList && groups.length > 0 && (
           <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-3'>
             {groups.map((group) => (
@@ -242,19 +238,18 @@ function GroupCard({ group }: { group: Group }) {
     <Link href={`/groups/${group.id}`} className='block'>
       <div
         className={cn(
-          'relative overflow-hidden rounded-xl border bg-card p-4 shadow-sm transition hover:shadow-md',
-          balanceState === 'credit' &&
-            'border-emerald-300/70 bg-emerald-50/40 dark:border-emerald-500/40 dark:bg-emerald-950/20',
-          balanceState === 'debt' &&
-            'border-red-300/70 bg-red-50/40 dark:border-red-500/40 dark:bg-red-950/20',
+          'group relative overflow-hidden rounded-xl border p-5 pl-7 shadow-sm transition hover:shadow-md',
+          // Faint tint at rest, full soft on hover — status without flooding the row
+          balanceState === 'credit' && 'bg-credit-soft/50 hover:bg-credit-soft',
+          balanceState === 'debt' && 'bg-owed-soft/50 hover:bg-owed-soft',
+          balanceState === 'settled' && 'bg-card',
         )}
       >
-        {/* Accent strip */}
         <span
           className={cn(
-            'absolute inset-y-0 left-0 w-1',
-            balanceState === 'credit' && 'bg-emerald-400',
-            balanceState === 'debt' && 'bg-red-400',
+            'absolute inset-y-0 left-0 w-1.5',
+            balanceState === 'credit' && 'bg-credit',
+            balanceState === 'debt' && 'bg-owed',
             balanceState === 'settled' && 'bg-muted',
           )}
         />
@@ -281,12 +276,10 @@ function GroupCard({ group }: { group: Group }) {
               </Typography>
             )}
 
-            <div className='mt-2 flex flex-wrap items-center gap-2 text-[11px] uppercase tracking-wide text-muted-foreground'>
-              <span className='rounded-full bg-muted px-2 py-0.5'>
-                {categoryLabel}
-              </span>
+            <div className='text-muted-foreground mt-2 flex flex-wrap items-center gap-2 text-[11px]'>
+              <span className='font-medium'>{categoryLabel}</span>
               {group.is_archived && (
-                <span className='rounded-full bg-amber-100 px-2 py-0.5 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200'>
+                <span className='bg-muted text-muted-foreground rounded-full px-2 py-0.5'>
                   Archived
                 </span>
               )}
@@ -302,23 +295,23 @@ function GroupCard({ group }: { group: Group }) {
           )}
         </div>
 
-        <div className='mt-3 flex flex-wrap items-center justify-between gap-2'>
+        <div className='mt-4 flex flex-wrap items-center justify-between gap-2'>
           <Typography
             variant='c1'
             className={cn(
               'text-sm font-medium',
-              balanceState === 'debt' && 'text-red-600 dark:text-red-400',
-              balanceState === 'credit' &&
-                'text-emerald-600 dark:text-emerald-400',
+              balanceState === 'debt' && 'text-owed',
+              balanceState === 'credit' && 'text-credit',
               balanceState === 'settled' && 'text-muted-foreground',
             )}
           >
             {balanceLabel}
           </Typography>
 
-          <Typography variant='c1' className='text-xs text-muted-foreground/80'>
-            Tap to view details
-          </Typography>
+          <ChevronRight
+            aria-hidden
+            className='text-muted-foreground/60 h-4 w-4 shrink-0 transition-transform duration-200 group-hover:translate-x-0.5'
+          />
         </div>
       </div>
     </Link>

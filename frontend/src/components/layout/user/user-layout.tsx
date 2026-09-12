@@ -22,9 +22,12 @@ export default function UserLayout({
   noLayout = false,
 }: UserLayoutProps) {
   return (
-    <div className='flex min-h-screen flex-col bg-background text-foreground'>
+    <div className='bg-background text-foreground flex min-h-dvh flex-col'>
       <Navbar />
-      <main className={cn(!noLayout && 'layout flex-1 py-8', className)}>
+      <main
+        id='main'
+        className={cn(!noLayout && 'layout flex-1 py-8', className)}
+      >
         {backHref && (
           <ButtonLink
             href={backHref}
