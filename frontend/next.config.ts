@@ -7,6 +7,8 @@ const nextConfig: NextConfig = {
 
   reactStrictMode: true,
 
+  devIndicators: false,
+
   // Uncomment to add domain whitelist
   images: {
     remotePatterns: [
